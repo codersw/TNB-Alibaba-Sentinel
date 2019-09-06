@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @author shaowen
  */
 @Component
-public class RedisClentInit {
+public class RedisClientInit {
 
     @Value("${spring.redis.host}")
     private String host;
