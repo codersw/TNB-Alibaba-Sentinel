@@ -8,7 +8,7 @@
         <version>1.6.3</version>
     </parent>
 
-    <artifactId>sentinel-dashboard</artifactId>
+    <artifactId>dashboard</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -28,6 +28,17 @@
             <artifactId>sentinel-web-servlet</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-redis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-transport-simple-http</artifactId>
@@ -59,7 +70,6 @@
             <version>${spring.boot.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -134,6 +144,12 @@
             <artifactId>system-rules</artifactId>
             <version>1.16.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

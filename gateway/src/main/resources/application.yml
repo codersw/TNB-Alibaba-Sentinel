@@ -10,18 +10,11 @@ spring:
         locator:
           lower-case-service-id: true
       routes:
-        # Add your routes here.
-        - id: aliyun_route
-          uri: https://www.aliyun.com/
-          predicates:
-            - Path=/product/**
-        - id: httpbin_route
-          uri: https://httpbin.org
-          predicates:
-            - Path=/httpbin/**
-          filters:
-            - RewritePath=/httpbin/(?<segment>.*), /$\{segment}
         - id: test_api
           uri: http://192.168.4.144:8088/api/**
           predicates:
-            - Path=/api/**
+              - Path=/api/**
+        - id: wcf_api
+          uri: http://apicache200.517.dev:51707/User/**
+          predicates:
+              - Path=/User/**
