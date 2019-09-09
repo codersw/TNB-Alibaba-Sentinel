@@ -23,12 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService.AuthUser;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService.PrivilegeType;
+import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
+import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRuleProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.repository.rule.InMemoryRuleRepositoryAdapter;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
-import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.dashboard.domain.Result;
 
 import org.slf4j.Logger;
@@ -61,11 +63,9 @@ public class FlowControllerV2 {
     private InMemoryRuleRepositoryAdapter<FlowRuleEntity> repository;
 
     @Autowired
-    @Qualifier("flowRuleRedisProvider")
-    private DynamicRuleProvider<List<FlowRuleEntity>> ruleProvider;
+    private RedisRuleProvider ruleProvider;
     @Autowired
-    @Qualifier("flowRuleRedisPublisher")
-    private DynamicRulePublisher<List<FlowRuleEntity>> rulePublisher;
+    private RedisRulePublisher rulePublisher;
 
     @Autowired
     private AuthService<HttpServletRequest> authService;
@@ -79,7 +79,7 @@ public class FlowControllerV2 {
             return Result.ofFail(-1, "app can't be null or empty");
         }
         try {
-            List<FlowRuleEntity> rules = ruleProvider.getRules(app);
+            List<FlowRuleEntity> rules = ruleProvider.getRules(app,RuleConsts.RULE_FLOW,FlowRuleEntity.class);
             if (rules != null && !rules.isEmpty()) {
                 for (FlowRuleEntity entity : rules) {
                     entity.setApp(app);
@@ -229,6 +229,6 @@ public class FlowControllerV2 {
 
     private void publishRules(/*@NonNull*/ String app) throws Exception {
         List<FlowRuleEntity> rules = repository.findAllByApp(app);
-        rulePublisher.publish(app, rules);
+        rulePublisher.publish(app, rules, RuleConsts.RULE_FLOW, RuleConsts.RULE_FLOW_CHANNEL);
     }
 }

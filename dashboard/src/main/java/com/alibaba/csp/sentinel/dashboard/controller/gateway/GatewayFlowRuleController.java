@@ -18,6 +18,7 @@ package com.alibaba.csp.sentinel.dashboard.controller.gateway;
 
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
+import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayParamFlowItemEntity;
 import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
@@ -26,10 +27,14 @@ import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.AddFlowRuleReqV
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.GatewayParamFlowItemVo;
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.UpdateFlowRuleReqVo;
 import com.alibaba.csp.sentinel.dashboard.repository.gateway.InMemGatewayFlowRuleStore;
+import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRuleProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +67,12 @@ public class GatewayFlowRuleController {
     @Autowired
     private AuthService<HttpServletRequest> authService;
 
+    @Autowired
+    private RedisRuleProvider ruleProvider;
+
+    @Autowired
+    private RedisRulePublisher rulePublisher;
+
     @GetMapping("/list.json")
     public Result<List<GatewayFlowRuleEntity>> queryFlowRules(HttpServletRequest request, String app, String ip, Integer port) {
         AuthService.AuthUser authUser = authService.getAuthUser(request);
@@ -78,7 +89,7 @@ public class GatewayFlowRuleController {
         }
 
         try {
-            List<GatewayFlowRuleEntity> rules = sentinelApiClient.fetchGatewayFlowRules(app, ip, port).get();
+            List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app,RuleConsts.RULE_FLOW,GatewayFlowRuleEntity.class);
             repository.saveAll(rules);
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {
@@ -250,9 +261,7 @@ public class GatewayFlowRuleController {
             return Result.ofThrowable(-1, throwable);
         }
 
-        if (!publishRules(app, ip, port)) {
-            logger.warn("publish gateway flow rules fail after add");
-        }
+        publishRules(app, entity.getIp(), entity.getPort());
 
         return Result.ofSuccess(entity);
     }
@@ -399,9 +408,7 @@ public class GatewayFlowRuleController {
             return Result.ofThrowable(-1, throwable);
         }
 
-        if (!publishRules(app, entity.getIp(), entity.getPort())) {
-            logger.warn("publish gateway flow rules fail after update");
-        }
+        publishRules(app, entity.getIp(), entity.getPort());
 
         return Result.ofSuccess(entity);
     }
@@ -429,15 +436,17 @@ public class GatewayFlowRuleController {
             return Result.ofThrowable(-1, throwable);
         }
 
-        if (!publishRules(oldEntity.getApp(), oldEntity.getIp(), oldEntity.getPort())) {
-            logger.warn("publish gateway flow rules fail after delete");
-        }
+        publishRules(oldEntity.getApp(), oldEntity.getIp(), oldEntity.getPort());
 
         return Result.ofSuccess(id);
     }
 
-    private boolean publishRules(String app, String ip, Integer port) {
+    private void publishRules(String app, String ip, Integer port) {
         List<GatewayFlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
-        return sentinelApiClient.modifyGatewayFlowRules(app, ip, port, rules);
+        try {
+            rulePublisher.publish(app, rules, RuleConsts.RULE_FLOW, RuleConsts.RULE_FLOW_CHANNEL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

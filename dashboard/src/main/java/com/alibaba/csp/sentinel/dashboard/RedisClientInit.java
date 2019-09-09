@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
- * 注入redis客户端不知道为什么用Lettuce
+ * 注入redis客户端不知道为什么用Lettuce Pub/Sub
  * 为了兼容Sentinel只好用这个
  * @author shaowen
  */

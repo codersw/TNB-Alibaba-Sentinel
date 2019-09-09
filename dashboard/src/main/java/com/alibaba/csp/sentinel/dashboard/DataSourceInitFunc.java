@@ -19,6 +19,7 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.List;
 
@@ -29,11 +30,16 @@ import java.util.List;
  */
 @Component
 public class DataSourceInitFunc implements InitFunc {
+
+    @Value("${spring.redis.host}")
+    private String host;
+    @Value("${spring.redis.port}")
+    private int port;
     @Override
     public void init() throws Exception {
         RedisConnectionConfig config = RedisConnectionConfig.builder()
-                .withHost("localhost")
-                .withPort(6379)
+                .withHost(host)
+                .withPort(port)
                 .build();
         // 流控
         Converter<String, List<FlowRule>> parser0 = source -> JSON.parseObject(source,new TypeReference<List<FlowRule>>() {});

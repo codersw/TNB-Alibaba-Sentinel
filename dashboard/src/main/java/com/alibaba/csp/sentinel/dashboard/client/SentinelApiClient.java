@@ -737,7 +737,7 @@ public class SentinelApiClient {
             AssertUtil.notEmpty(ip, "Bad machine IP");
             AssertUtil.isTrue(port > 0, "Bad machine port");
             String data = JSON.toJSONString(
-                    apis.stream().map(r -> r.toApiDefinition()).collect(Collectors.toList()));
+                    apis.stream().map(ApiDefinitionEntity::toApiDefinition).collect(Collectors.toList()));
             Map<String, String> params = new HashMap<>(2);
             params.put("data", data);
             String result = executeCommand(app, ip, port, MODIFY_GATEWAY_API_PATH, params, true).get();
@@ -758,8 +758,7 @@ public class SentinelApiClient {
             return executeCommand(ip, port, FETCH_GATEWAY_FLOW_RULE_PATH, false)
                     .thenApply(r -> {
                         List<GatewayFlowRule> gatewayFlowRules = JSON.parseArray(r, GatewayFlowRule.class);
-                        List<GatewayFlowRuleEntity> entities = gatewayFlowRules.stream().map(rule -> GatewayFlowRuleEntity.fromGatewayFlowRule(app, ip, port, rule)).collect(Collectors.toList());
-                        return entities;
+                        return gatewayFlowRules.stream().map(rule -> GatewayFlowRuleEntity.fromGatewayFlowRule(app, ip, port, rule)).collect(Collectors.toList());
                     });
         } catch (Exception ex) {
             logger.warn("Error when fetching gateway flow rules", ex);
@@ -777,7 +776,7 @@ public class SentinelApiClient {
             AssertUtil.notEmpty(ip, "Bad machine IP");
             AssertUtil.isTrue(port > 0, "Bad machine port");
             String data = JSON.toJSONString(
-                    rules.stream().map(r -> r.toGatewayFlowRule()).collect(Collectors.toList()));
+                    rules.stream().map(GatewayFlowRuleEntity::toGatewayFlowRule).collect(Collectors.toList()));
             Map<String, String> params = new HashMap<>(2);
             params.put("data", data);
             String result = executeCommand(app, ip, port, MODIFY_GATEWAY_FLOW_RULE_PATH, params, true).get();
