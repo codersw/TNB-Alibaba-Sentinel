@@ -9,7 +9,7 @@ spring:
         charset: UTF-8
         enabled: true
   redis:
-     host: localhost
+     host: redis
      port: 6379
 logging:
   level:
