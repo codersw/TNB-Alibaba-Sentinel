@@ -81,7 +81,7 @@ public class DashboardConfig {
         return "";
     }
 
-    protected static String getConfigStr(String name) {
+    public static String getConfigStr(String name) {
         if (cacheMap.containsKey(name)) {
             return (String) cacheMap.get(name);
         }
@@ -96,7 +96,7 @@ public class DashboardConfig {
         return val;
     }
 
-    protected static int getConfigInt(String name, int defaultVal, int minVal) {
+    public static int getConfigInt(String name, int defaultVal, int minVal) {
         if (cacheMap.containsKey(name)) {
             return (int)cacheMap.get(name);
         }

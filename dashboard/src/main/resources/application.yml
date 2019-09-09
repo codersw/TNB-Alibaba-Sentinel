@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8088
 spring:
   application:
     name: dashboard
@@ -9,14 +9,14 @@ spring:
         charset: UTF-8
         enabled: true
   redis:
-     host: redis
+     host: localhost
      port: 6379
 logging:
   level:
     org:
       springframework:
         web: INFO
-  file: ${user.home}/logs/csp/sentinel-dashboard.log
+  file: ${user.home}/logs/csp/dashboard.log
   pattern:
     file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
     console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'

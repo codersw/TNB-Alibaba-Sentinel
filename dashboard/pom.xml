@@ -16,7 +16,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.boot.version>2.0.5.RELEASE</spring.boot.version>
         <curator.version>4.0.1</curator.version>
-        <docker.image.prefix></docker.image.prefix>
+        <!-- 设置docker镜像前缀-->
+        <docker.image.prefix>test</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -159,13 +160,18 @@
         <plugins>
             <plugin>
                 <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.3.6</version>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.3</version>
                 <configuration>
-                    <repository>${docker.image.prefix}/${project.artifactId}</repository>
-                    <buildArgs>
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>./</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
                 </configuration>
             </plugin>
             <plugin>

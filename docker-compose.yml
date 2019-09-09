@@ -12,10 +12,6 @@ services:
       # 目录映射
       - "${REDIS_DIR}/conf:/usr/local/etc/redis"
       - "${REDIS_DIR}/data:/data"
-    command:
-      # 执行的命令
-        "redis-server"
-
   mysql:
     image: "mysql:5.7.27"
     ports:
@@ -40,5 +36,23 @@ services:
     build:
       context: ./
       dockerfile: dashboard/Dockerfile
+      args:
+        JAR_FILE: dashboard/target/dashboard.jar
     ports:
       - "8080:8080"
+#    environment:
+#      - "csp.sentinel.dashboard.server=localhost:8080"
+#      - "project.name=dashboard"
+#      - "csp.sentinel.api.port=8719"
+#      - "redis.host=172.17.0.1"
+#      - "redis.port=6379"
+#      - "server.port=8080"
+    environment:
+      - JAVA_OPTS=-Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -Dcsp.sentinel.api.port=8719 -Dredis.host=172.17.0.1 -Dredis.port=6379
+    volumes:
+      - "${DASH_DIR}/tmp:/tmp"
+      - "${DASH_DIR}/logs:/root/logs/"
+    depends_on:
+      - mysql
+      - redis
+    restart: always
