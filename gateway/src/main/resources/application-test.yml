@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+        - id: test_api
+          uri: http://192.168.4.144:8088/api/**
+          predicates:
+            - Path=/api/**
+        - id: wcf_api
+          uri: http://apicache200.517.dev:51707/User/**
+          predicates:
+            - Path=/User/**
+        - id: test
+          uri: https://www.douyu.com
+          predicates:
+            - Path=/test/**
+#开启actuator管理api，后面要关闭
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

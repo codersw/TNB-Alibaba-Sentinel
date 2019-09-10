@@ -28,7 +28,7 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() throws IOException {
         String value = getDatafromFile();
         if(!value.equals("")){
             JSON.parseArray(value,RouteDefinition.class).forEach(routeDefinition -> routeDefinitionWriter.save(Mono.just(routeDefinition)).subscribe());
@@ -89,9 +89,11 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
         this.publisher = applicationEventPublisher;
     }
 
-    private String getDatafromFile() {
+    private String getDatafromFile() throws IOException {
         String ruleDir = SentinelConfig.getConfig("user.home") + "/sentinel/rules";
         String gatewayFlowRulePath = ruleDir + "/geteway-routes.json";
+        this.mkdirIfNotExits(ruleDir);
+        this.createFileIfNotExits(gatewayFlowRulePath);
         BufferedReader reader = null;
         StringBuilder laststr = new StringBuilder();
         try {
@@ -151,4 +153,30 @@ public class DynamicRouteService implements ApplicationEventPublisherAware {
         }
         System.out.println("文件写入成功！");
     }
+
+    /**
+     * 创建目录
+     *
+     * @param filePath
+     */
+    private void mkdirIfNotExits(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
+
+    /**
+     * 创建文件
+     *
+     * @param filePath
+     * @throws IOException
+     */
+    private void createFileIfNotExits(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+    }
+
 }

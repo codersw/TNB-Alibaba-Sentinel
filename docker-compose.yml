@@ -2,36 +2,36 @@
 version: "3.7"
 # 管理的服务
 services:
-  redis:
-    # 指定镜像
-    image: "redis:5.0.5"
-    ports:
-      # 端口映射
-      - "6379:6379"
-    volumes:
-      # 目录映射
-      - "${REDIS_DIR}/conf:/usr/local/etc/redis"
-      - "${REDIS_DIR}/data:/data"
-  mysql:
-    image: "mysql:5.7.27"
-    ports:
-      - "3306:3306"
-    volumes:
-      - "${MYSQL_DIR}/data:/var/lib/mysql"
-      - "${MYSQL_DIR}/conf.d:/etc/mysql/conf.d"
-    environment:
-      # 环境变量
-      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-      - "MYSQL_DATABASE=test"
-      - "MYSQL_ROOT_HOST=%"
-    command: [
-      "mysqld",
-      "--innodb-buffer-pool-size=20M",
-      "--character-set-server=utf8",
-      "--collation-server=utf8_general_ci",
-      "--default-time-zone=+8:00",
-      "--lower-case-table-names=1"
-    ]
+#  redis:
+#    # 指定镜像
+#    image: "redis:5.0.5"
+#    ports:
+#      # 端口映射
+#      - "6379:6379"
+#    volumes:
+#      # 目录映射
+#      - "${REDIS_DIR}/conf:/usr/local/etc/redis"
+#      - "${REDIS_DIR}/data:/data"
+#  mysql:
+#    image: "mysql:5.7.27"
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - "${MYSQL_DIR}/data:/var/lib/mysql"
+#      - "${MYSQL_DIR}/conf.d:/etc/mysql/conf.d"
+#    environment:
+#      # 环境变量
+#      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+#      - "MYSQL_DATABASE=test"
+#      - "MYSQL_ROOT_HOST=%"
+#    command: [
+#      "mysqld",
+#      "--innodb-buffer-pool-size=20M",
+#      "--character-set-server=utf8",
+#      "--collation-server=utf8_general_ci",
+#      "--default-time-zone=+8:00",
+#      "--lower-case-table-names=1"
+#    ]
   dashboard:
     build:
       context: ./
@@ -42,12 +42,26 @@ services:
       - "8080:8080"
     environment:
       - "JAVA_OPTS=-Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=dashboard -Dcsp.sentinel.api.port=8719"
-      - "redis.host=localhost"
-      - "redis.port=6379"
+      - "server.address=localhost"
     volumes:
-      - "${DASH_DIR}/tmp:/tmp"
+      - "${DASH_DIR}/tmp:/tmp/dashboard"
       - "${DASH_DIR}/logs:/root/logs/"
-    depends_on:
-      - mysql
-      - redis
+#    depends_on:
+#      - mysql
+#      - redis
+    restart: always
+  gateway:
+    build:
+      context: ./
+      dockerfile: gateway/Dockerfile
+      args:
+        JAR_FILE: gateway/target/gateway.jar
+    ports:
+      - "8090:8090"
+    environment:
+      - "JAVA_OPTS=-Dserver.port=8090 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=gateway -Dcsp.sentinel.api.port=8720 -Dcsp.api.type=1"
+      - "server.address=localhost"
+    volumes:
+      - "${GATE_DIR}/tmp:/tmp/gateway"
+      - "${GATE_DIR}/logs:/root/logs/"
     restart: always

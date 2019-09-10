@@ -1,7 +1,7 @@
 # 基于openjdk8镜像
 FROM java:8
 # 将本地文件夹挂在到当前容器
-VOLUME /tmp
+VOLUME /tmp/dashboard
 # 复制文件到容器
 ARG JAR_FILE
 ADD ${JAR_FILE} app.jar
