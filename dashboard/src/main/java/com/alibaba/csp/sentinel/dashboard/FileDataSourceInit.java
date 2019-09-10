@@ -59,7 +59,7 @@ public class FileDataSourceInit implements InitFunc {
                 apiDefinitionListParser
         );
         GatewayApiDefinitionManager.register2Property(gatewayApiDefinitionDS.getProperty());
-        // TODO sentinel 没有封装写入文件网关API的方法or我没有找到 但我已经手动实现了
+        // TODO 这里写这些视乎没有什么用 sentinel 没有封装写入文件网关API的方法or我没有找到 但我已经手动实现了
 
         // 网关流控规则
         ReadableDataSource<String, Set<GatewayFlowRule>> gatewayFlowRuleDS = new FileRefreshableDataSource<>(
@@ -67,7 +67,7 @@ public class FileDataSourceInit implements InitFunc {
                 gatewayFlowRuleListParser
         );
         GatewayRuleManager.register2Property(gatewayFlowRuleDS.getProperty());
-        // TODO sentinel 没有封装写入文件网关配置的方法or我没有找到 但我已经手动实现了
+        // TODO 这里写这些视乎没有什么用 sentinel 没有封装写入文件网关配置的方法or我没有找到 但我已经手动实现了
 
 
 

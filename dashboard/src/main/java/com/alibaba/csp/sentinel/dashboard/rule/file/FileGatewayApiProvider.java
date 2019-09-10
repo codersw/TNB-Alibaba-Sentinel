@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +48,7 @@ public class FileGatewayApiProvider {
             return rules.stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
         }
     }
+
     private String getDatafromFile() {
 
         String ruleDir = DashboardConfig.getConfigStr("user.home") + "/sentinel/rules";
@@ -55,7 +57,7 @@ public class FileGatewayApiProvider {
         String laststr = "";
         try {
             FileInputStream fileInputStream = new FileInputStream(gatewayFlowRulePath);
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
             reader = new BufferedReader(inputStreamReader);
             String tempString = null;
             while ((tempString = reader.readLine()) != null) {

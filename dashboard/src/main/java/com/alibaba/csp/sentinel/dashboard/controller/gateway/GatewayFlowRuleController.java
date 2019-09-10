@@ -91,9 +91,8 @@ public class GatewayFlowRuleController {
         }
 
         try {
-            sentinelApiClient.fetchGatewayFlowRules(app, ip, port).get();
             List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app);
-            repository.saveAll(rules);
+            rules = repository.saveAll(rules);
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {
             logger.error("query gateway flow rules error:", throwable);
