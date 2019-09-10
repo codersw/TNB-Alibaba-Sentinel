@@ -25,7 +25,9 @@ import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.api.AddApiReqVo;
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.api.ApiPredicateItemVo;
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.api.UpdateApiReqVo;
 import com.alibaba.csp.sentinel.dashboard.repository.gateway.InMemApiDefinitionStore;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayApiProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayApiPublisher;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRuleProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
@@ -62,6 +64,10 @@ public class GatewayApiController {
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
+    @Qualifier("fileGatewayApiProvider")
+    private FileGatewayApiProvider ruleProvider;
+
+    @Autowired
     @Qualifier("fileGatewayApiPublisher")
     private FileGatewayApiPublisher rulePublisher;
 
@@ -81,8 +87,8 @@ public class GatewayApiController {
         }
 
         try {
-            List<ApiDefinitionEntity> apis = sentinelApiClient.fetchApis(app, ip, port).get();
-            repository.saveAll(apis);
+            List<ApiDefinitionEntity> apis = ruleProvider.getRules(app);
+            apis = repository.saveAll(apis);
             return Result.ofSuccess(apis);
         } catch (Throwable throwable) {
             logger.error("queryApis error:", throwable);

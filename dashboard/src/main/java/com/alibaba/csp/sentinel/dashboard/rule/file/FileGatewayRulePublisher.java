@@ -18,21 +18,16 @@ package com.alibaba.csp.sentinel.dashboard.rule.file;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
 import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
-import com.alibaba.csp.sentinel.dashboard.discovery.AppManagement;
-import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
-import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.*;
 import java.util.List;
-import java.util.Set;
+
 
 /**
- * sentinel没有封装写入文件方法
+ * sentinel没有封装网关规则写入文件方法
  * 所以自己封装写入文件
  * @author shaowen
  */

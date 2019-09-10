@@ -15,7 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule.file;
 
-import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
+
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
 import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
@@ -23,7 +23,6 @@ import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.*;
 import java.util.List;
 

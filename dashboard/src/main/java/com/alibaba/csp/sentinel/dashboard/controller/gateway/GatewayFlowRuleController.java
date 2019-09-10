@@ -28,12 +28,14 @@ import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.GatewayParamFlo
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.UpdateFlowRuleReqVo;
 import com.alibaba.csp.sentinel.dashboard.repository.gateway.InMemGatewayFlowRuleStore;
 import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiPublisher;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRuleProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -66,6 +68,10 @@ public class GatewayFlowRuleController {
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
+    @Qualifier("fileGatewayRuleProvider")
+    private FileGatewayRuleProvider ruleProvider;
+
+    @Autowired
     @Qualifier("fileGatewayRulePublisher")
     private FileGatewayRulePublisher rulePublisher;
 
@@ -85,7 +91,8 @@ public class GatewayFlowRuleController {
         }
 
         try {
-            List<GatewayFlowRuleEntity> rules = sentinelApiClient.fetchGatewayFlowRules(app, ip, port).get();
+            sentinelApiClient.fetchGatewayFlowRules(app, ip, port).get();
+            List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app);
             repository.saveAll(rules);
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {

@@ -59,8 +59,7 @@ public class GatewayConfiguration {
 
     @PostConstruct
     public void doInit() {
-        initCustomizedApis();
-        initGatewayRules();
+        GatewayCallbackManager.setBlockHandler(new GatewayBlockRequestHandler());
     }
 
     // 自定义API分组
