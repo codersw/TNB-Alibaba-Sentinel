@@ -1,5 +1,7 @@
 package com.alibaba.csp.sentinel.dashboard;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
+import com.alibaba.csp.sentinel.adapter.gateway.common.api.GatewayApiDefinitionManager;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.command.handler.ModifyParamFlowRulesCommandHandler;
@@ -27,6 +29,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 文件数据源注入
+ * @author shaowen
+ */
 public class FileDataSourceInit implements InitFunc {
     @Override
     public void init() throws Exception {
@@ -34,6 +40,7 @@ public class FileDataSourceInit implements InitFunc {
         String ruleDir = DashboardConfig.getConfigStr("user.home") + "/sentinel/rules";
         String flowRulePath = ruleDir + "/flow-rule.json";
         String gatewayFlowRulePath = ruleDir + "/gateway-flow-rule.json";
+        String gatewayApiDefinitionPath = ruleDir + "/gateway-api-definition.json";
         String degradeRulePath = ruleDir + "/degrade-rule.json";
         String systemRulePath = ruleDir + "/system-rule.json";
         String authorityRulePath = ruleDir + "/authority-rule.json";
@@ -46,16 +53,23 @@ public class FileDataSourceInit implements InitFunc {
         this.createFileIfNotExits(systemRulePath);
         this.createFileIfNotExits(authorityRulePath);
         this.createFileIfNotExits(hotParamFlowRulePath);
-        // 流控规则
+        // 网关API分组
+        ReadableDataSource<String, Set<ApiDefinition>> gatewayApiDefinitionDS = new FileRefreshableDataSource<>(
+                gatewayApiDefinitionPath,
+                apiDefinitionListParser
+        );
+        GatewayApiDefinitionManager.register2Property(gatewayApiDefinitionDS.getProperty());
+        // TODO sentinel 没有封装写入文件网关API的方法or我没有找到 但我已经手动实现了
+
+        // 网关流控规则
         ReadableDataSource<String, Set<GatewayFlowRule>> gatewayFlowRuleDS = new FileRefreshableDataSource<>(
                 gatewayFlowRulePath,
                 gatewayFlowRuleListParser
         );
         GatewayRuleManager.register2Property(gatewayFlowRuleDS.getProperty());
-        WritableDataSource<List<GatewayFlowRule>> gatewayFlowRuleWDS = new FileWritableDataSource<>(
-                gatewayFlowRulePath,
-                this::encodeJson
-        );
+        // TODO sentinel 没有封装写入文件网关配置的方法or我没有找到 但我已经手动实现了
+
+
 
         // 流控规则
         ReadableDataSource<String, List<FlowRule>> flowRuleRDS = new FileRefreshableDataSource<>(
@@ -123,21 +137,27 @@ public class FileDataSourceInit implements InitFunc {
     }
 
     /**
+     * 网关API分组对象转换
+     */
+    private Converter<String, Set<ApiDefinition>> apiDefinitionListParser = source -> JSON.parseObject(
+            source,
+            new TypeReference<Set<ApiDefinition>>() {
+            }
+    );
+    /**
+     * 网关流控规则对象转换
+     */
+    private Converter<String, Set<GatewayFlowRule>> gatewayFlowRuleListParser = source -> JSON.parseObject(
+            source,
+            new TypeReference<Set<GatewayFlowRule>>() {
+            }
+    );
+    /**
      * 流控规则对象转换
      */
     private Converter<String, List<FlowRule>> flowRuleListParser = source -> JSON.parseObject(
             source,
             new TypeReference<List<FlowRule>>() {
-            }
-    );
-
-
-    /**
-     * 流控规则对象转换
-     */
-    private Converter<String, Set<GatewayFlowRule>> gatewayFlowRuleListParser = source -> JSON.parseObject(
-            source,
-            new TypeReference<Set<GatewayFlowRule>>() {
             }
     );
     /**

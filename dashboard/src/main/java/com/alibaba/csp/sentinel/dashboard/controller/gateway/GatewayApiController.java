@@ -25,10 +25,13 @@ import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.api.AddApiReqVo;
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.api.ApiPredicateItemVo;
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.api.UpdateApiReqVo;
 import com.alibaba.csp.sentinel.dashboard.repository.gateway.InMemApiDefinitionStore;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayApiPublisher;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +60,10 @@ public class GatewayApiController {
 
     @Autowired
     private AuthService<HttpServletRequest> authService;
+
+    @Autowired
+    @Qualifier("fileGatewayApiPublisher")
+    private FileGatewayApiPublisher rulePublisher;
 
     @GetMapping("/list.json")
     public Result<List<ApiDefinitionEntity>> queryApis(HttpServletRequest request, String app, String ip, Integer port) {
@@ -146,7 +153,7 @@ public class GatewayApiController {
 
         // 检查API名称不能重复
         List<ApiDefinitionEntity> allApis = repository.findAllByMachine(MachineInfo.of(app.trim(), ip.trim(), port));
-        if (allApis.stream().map(o -> o.getApiName()).anyMatch(o -> o.equals(apiName.trim()))) {
+        if (allApis.stream().map(ApiDefinitionEntity::getApiName).anyMatch(o -> o.equals(apiName.trim()))) {
             return Result.ofFail(-1, "apiName exists: " + apiName);
         }
 
@@ -161,8 +168,11 @@ public class GatewayApiController {
             return Result.ofThrowable(-1, throwable);
         }
 
-        if (!publishApis(app, ip, port)) {
-            logger.warn("publish gateway apis fail after add");
+        try {
+            publishApis(entity.getApp(), entity.getIp(), entity.getPort());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("delete gateway api error:", e.getMessage());
         }
 
         return Result.ofSuccess(entity);
@@ -227,10 +237,12 @@ public class GatewayApiController {
             return Result.ofThrowable(-1, throwable);
         }
 
-        if (!publishApis(app, entity.getIp(), entity.getPort())) {
-            logger.warn("publish gateway apis fail after update");
+        try {
+            publishApis(entity.getApp(), entity.getIp(), entity.getPort());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("delete gateway api error:", e.getMessage());
         }
-
         return Result.ofSuccess(entity);
     }
 
@@ -255,16 +267,18 @@ public class GatewayApiController {
             logger.error("delete gateway api error:", throwable);
             return Result.ofThrowable(-1, throwable);
         }
-
-        if (!publishApis(oldEntity.getApp(), oldEntity.getIp(), oldEntity.getPort())) {
-            logger.warn("publish gateway apis fail after delete");
+        try {
+            publishApis(oldEntity.getApp(), oldEntity.getIp(), oldEntity.getPort());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("delete gateway api error:", e.getMessage());
         }
 
         return Result.ofSuccess(id);
     }
 
-    private boolean publishApis(String app, String ip, Integer port) {
+    private void publishApis(String app, String ip, Integer port) throws Exception {
         List<ApiDefinitionEntity> apis = repository.findAllByMachine(MachineInfo.of(app, ip, port));
-        return sentinelApiClient.modifyApis(app, ip, port, apis);
+        rulePublisher.publish(app,ip,port,apis);
     }
 }
