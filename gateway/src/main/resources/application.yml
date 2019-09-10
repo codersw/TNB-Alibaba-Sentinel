@@ -18,3 +18,9 @@ spring:
           uri: http://apicache200.517.dev:51707/User/**
           predicates:
               - Path=/User/**
+#开启actuator管理api，后面要关闭
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

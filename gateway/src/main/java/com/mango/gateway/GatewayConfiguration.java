@@ -1,18 +1,18 @@
 package com.mango.gateway;
 
-import com.alibaba.csp.sentinel.adapter.gateway.common.SentinelGatewayConstants;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
-import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPathPredicateItem;
-import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPredicateItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.GatewayApiDefinitionManager;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayFlowRule;
-import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayParamFlowItem;
 import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.SentinelGatewayFilter;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.callback.GatewayCallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBlockExceptionHandler;
-import com.alibaba.csp.sentinel.property.SentinelProperty;
-import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
+import com.alibaba.csp.sentinel.datasource.Converter;
+import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
+import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +21,9 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
-
 import javax.annotation.PostConstruct;
+import java.io.FileNotFoundException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,49 +57,38 @@ public class GatewayConfiguration {
     }
 
     @PostConstruct
-    public void doInit() {
+    public void doInit() throws FileNotFoundException {
+        String ruleDir = SentinelConfig.getConfig("user.home") + "/sentinel/rules";
+        String gatewayFlowRulePath = ruleDir + "/gateway-flow-rule.json";
+        String gatewayApiDefinitionPath = ruleDir + "/gateway-api-definition.json";
+        // 网关API分组
+        ReadableDataSource<String, Set<ApiDefinition>> gatewayApiDefinitionDS = new FileRefreshableDataSource<>(
+                gatewayApiDefinitionPath,
+                apiDefinitionListParser
+        );
+        GatewayApiDefinitionManager.register2Property(gatewayApiDefinitionDS.getProperty());
+        // 网关流控规则
+        ReadableDataSource<String, Set<GatewayFlowRule>> gatewayFlowRuleDS = new FileRefreshableDataSource<>(
+                gatewayFlowRulePath,
+                gatewayFlowRuleListParser
+        );
+        GatewayRuleManager.register2Property(gatewayFlowRuleDS.getProperty());
         GatewayCallbackManager.setBlockHandler(new GatewayBlockRequestHandler());
     }
-
-    // 自定义API分组
-    private void initCustomizedApis() {
-        Set<ApiDefinition> definitions = new HashSet<>();
-        ApiDefinition api1 = new ApiDefinition("test_api")
-                .setPredicateItems(new HashSet<ApiPredicateItem>() {{
-                    add(new ApiPathPredicateItem().setPattern("/api/**")
-                            .setMatchStrategy(SentinelGatewayConstants.URL_MATCH_STRATEGY_PREFIX));
-                }});
-        ApiDefinition api2 = new ApiDefinition("wcf_api")
-                .setPredicateItems(new HashSet<ApiPredicateItem>() {{
-                    add(new ApiPathPredicateItem().setPattern("/wcf/**")
-                            .setMatchStrategy(SentinelGatewayConstants.URL_MATCH_STRATEGY_PREFIX));
-                }});
-        definitions.add(api1);
-        definitions.add(api2);
-        GatewayApiDefinitionManager.loadApiDefinitions(definitions);
-        GatewayCallbackManager.setBlockHandler(new GatewayBlockRequestHandler());
-    }
-
-    //定义route
-    private void initGatewayRules() {
-        Set<GatewayFlowRule> rules = new HashSet<>();
-        rules.add(new GatewayFlowRule("test_api")
-                .setCount(10)
-                .setIntervalSec(1)
-                .setParamItem(new GatewayParamFlowItem()
-                      .setParseStrategy(SentinelGatewayConstants.PARAM_PARSE_STRATEGY_CLIENT_IP)
-                )
-        );
-        rules.add(new GatewayFlowRule("wcf_api")
-                .setCount(10)
-                .setIntervalSec(1)
-                .setParamItem(new GatewayParamFlowItem()
-                        .setParseStrategy(SentinelGatewayConstants.PARAM_PARSE_STRATEGY_CLIENT_IP)
-                )
-        );
-        /**
-         * 手动加载网关规则
-         */
-        GatewayRuleManager.loadRules(rules);
-    }
+    /**
+     * 网关API分组对象转换
+     */
+    private Converter<String, Set<ApiDefinition>> apiDefinitionListParser = source -> JSON.parseObject(
+            source,
+            new TypeReference<Set<ApiDefinition>>() {
+            }
+    );
+    /**
+     * 网关流控规则对象转换
+     */
+    private Converter<String, Set<GatewayFlowRule>> gatewayFlowRuleListParser = source -> JSON.parseObject(
+            source,
+            new TypeReference<Set<GatewayFlowRule>>() {
+            }
+    );
 }
