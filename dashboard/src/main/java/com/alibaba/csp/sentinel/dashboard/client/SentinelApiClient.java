@@ -364,7 +364,7 @@ public class SentinelApiClient {
             AssertUtil.notEmpty(ip, "Bad machine IP");
             AssertUtil.isTrue(port > 0, "Bad machine port");
             String data = JSON.toJSONString(
-                    entities.stream().map(r -> r.toRule()).collect(Collectors.toList()));
+                    entities.stream().map(RuleEntity::toRule).collect(Collectors.toList()));
             Map<String, String> params = new HashMap<>(2);
             params.put("type", type);
             params.put("data", data);

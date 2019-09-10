@@ -31,7 +31,7 @@ import java.util.List;
  * redis拉取规则
  * @author shaowen
  */
-@Component
+// @Component
 public class RedisRuleProvider{
 
     @Autowired

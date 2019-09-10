@@ -1,8 +1,10 @@
 package com.alibaba.csp.sentinel.dashboard;
 
+import com.alibaba.csp.sentinel.adapter.gateway.common.rule.GatewayRuleManager;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
 import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.datasource.redis.RedisDataSource;
@@ -29,7 +31,7 @@ import java.util.List;
  * @author shaowen
  */
 @Component
-public class DataSourceInitFunc implements InitFunc {
+public class RedisDataSourceInit implements InitFunc {
 
     @Override
     public void init() throws Exception {

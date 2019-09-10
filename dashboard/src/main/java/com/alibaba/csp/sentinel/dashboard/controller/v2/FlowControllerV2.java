@@ -24,6 +24,8 @@ import com.alibaba.csp.sentinel.dashboard.auth.AuthService;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService.AuthUser;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService.PrivilegeType;
 import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
+import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiPublisher;
 import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRuleProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
@@ -63,9 +65,11 @@ public class FlowControllerV2 {
     private InMemoryRuleRepositoryAdapter<FlowRuleEntity> repository;
 
     @Autowired
-    private RedisRuleProvider ruleProvider;
+    @Qualifier("flowRuleDefaultProvider")
+    private FlowRuleApiProvider ruleProvider;
     @Autowired
-    private RedisRulePublisher rulePublisher;
+    @Qualifier("flowRuleDefaultPublisher")
+    private FlowRuleApiPublisher rulePublisher;
 
     @Autowired
     private AuthService<HttpServletRequest> authService;
@@ -79,7 +83,7 @@ public class FlowControllerV2 {
             return Result.ofFail(-1, "app can't be null or empty");
         }
         try {
-            List<FlowRuleEntity> rules = ruleProvider.getRules(app,RuleConsts.RULE_FLOW,FlowRuleEntity.class);
+            List<FlowRuleEntity> rules = ruleProvider.getRules(app);
             if (rules != null && !rules.isEmpty()) {
                 for (FlowRuleEntity entity : rules) {
                     entity.setApp(app);
@@ -229,6 +233,6 @@ public class FlowControllerV2 {
 
     private void publishRules(/*@NonNull*/ String app) throws Exception {
         List<FlowRuleEntity> rules = repository.findAllByApp(app);
-        rulePublisher.publish(app, rules, RuleConsts.RULE_FLOW, RuleConsts.RULE_FLOW_CHANNEL);
+        rulePublisher.publish(app, rules);
     }
 }

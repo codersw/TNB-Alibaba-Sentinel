@@ -15,7 +15,7 @@ import java.util.List;
  * redis推送规则
  * @author
  */
-@Component
+// @Component
 public class RedisRulePublisher {
 
     @Autowired

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * 为了兼容Sentinel只好用这个
  * @author shaowen
  */
-@Component
+// @Component
 public class RedisClientInit {
 
     @Value("${spring.redis.host}")
