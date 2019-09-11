@@ -58,6 +58,7 @@ const JS_APP = [
   'app/scripts/services/cluster_state_service.js',
   'app/scripts/services/gateway/api_service.js',
   'app/scripts/services/gateway/flow_service.js',
+  'app/scripts/services/gateway/routes_service.js',
 ];
 
 gulp.task('lib', function () {
@@ -123,7 +124,7 @@ gulp.task('serve', ['build'], function () {
   });
   // 打开浏览器
   setTimeout(() => {
-    open('http://localhost:4200/index_dev.htm')
+    open('http://localhost:8080/index_dev.htm')
   }, 200);
   // 监听
   gulp.watch(app.srcPath + '**/*.js', ['js']);

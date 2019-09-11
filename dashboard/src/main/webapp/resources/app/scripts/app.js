@@ -361,5 +361,22 @@ angular
                   });
               }]
           }
+      })
+
+      .state('dashboard.gatewayRoutes',{
+          templateUrl: 'app/views/gateway/routes.html',
+          url: '/gateway/flow/:app',
+          controller: 'GatewayRoutesCtl',
+          resolve: {
+              loadMyFiles: ['$ocLazyLoad', function ($ocLazyLoad) {
+                  return $ocLazyLoad.load({
+                      name: 'sentinelDashboardApp',
+                      files: [
+                          'app/scripts/controllers/gateway/routes.js',
+                      ]
+                  });
+              }]
+          }
       });
+
   }]);

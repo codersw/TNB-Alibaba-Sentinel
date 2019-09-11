@@ -16,13 +16,13 @@
 package com.alibaba.csp.sentinel.dashboard.rule.file;
 
 
-import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
+import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
+import com.mango.common.FileConsts;
+import com.mango.common.FileUtils;
 import org.springframework.stereotype.Component;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,68 +39,11 @@ public class FileGatewayRuleProvider {
         if (StringUtil.isBlank(appName)) {
             return new ArrayList<>();
         }
-        String value = getDatafromFile();
+        String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_FLOW_RULE);
         if (value.equals("")) {
             return new ArrayList<>();
         } else {
             return JSON.parseArray(value,GatewayFlowRuleEntity.class).stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
         }
     }
-    private String getDatafromFile() throws IOException {
-
-        String ruleDir = DashboardConfig.getConfigStr("user.home") + "/sentinel/rules";
-        String gatewayFlowRulePath = ruleDir + "/gateway-flow-rule.json";
-        this.mkdirIfNotExits(ruleDir);
-        this.createFileIfNotExits(gatewayFlowRulePath);
-        BufferedReader reader = null;
-        StringBuilder laststr = new StringBuilder();
-        try {
-            FileInputStream fileInputStream = new FileInputStream(gatewayFlowRulePath);
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
-            reader = new BufferedReader(inputStreamReader);
-            String tempString;
-            while ((tempString = reader.readLine()) != null) {
-                laststr.append(tempString);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        System.out.println("文件读取成功："+ laststr);
-        return laststr.toString();
-    }
-
-    /**
-     * 创建目录
-     *
-     * @param filePath
-     */
-    private void mkdirIfNotExits(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-    }
-
-    /**
-     * 创建文件
-     *
-     * @param filePath
-     * @throws IOException
-     */
-    private void createFileIfNotExits(String filePath) throws IOException {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-    }
-
 }

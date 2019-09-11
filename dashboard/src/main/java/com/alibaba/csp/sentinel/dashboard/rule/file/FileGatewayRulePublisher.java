@@ -15,14 +15,15 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule.file;
 
+import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
-import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
+import com.mango.common.FileConsts;
+import com.mango.common.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.io.*;
 import java.util.List;
 
 
@@ -45,40 +46,7 @@ public class FileGatewayRulePublisher {
             return;
         }
         sentinelApiClient.modifyGatewayFlowRules(app, ip, port, rules);
-        saveDataToFile(JSON.toJSONString(rules));
+        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_FLOW_RULE,JSON.toJSONString(rules));
     }
 
-    private void saveDataToFile(String data) throws Exception{
-        String ruleDir = DashboardConfig.getConfigStr("user.home") + "/sentinel/rules";
-        String gatewayFlowRulePath = ruleDir + "/gateway-flow-rule.json";
-        BufferedWriter writer = null;
-
-        File file = new File(gatewayFlowRulePath);
-        //如果文件不存在，则新建一个
-        if(!file.exists()){
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new Exception(e.getMessage());
-            }
-        }
-        //写入
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,false), "UTF-8"));
-            writer.write(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                if(writer != null){
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new Exception(e.getMessage());
-            }
-        }
-        System.out.println("文件写入成功！");
-    }
 }

@@ -19,6 +19,8 @@ import com.alibaba.csp.sentinel.init.InitExecutor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 控制台启动类
@@ -38,5 +40,13 @@ public class DashboardApplication {
 
     private static void triggerSentinelInit() {
         new Thread(InitExecutor::doInit).start();
+    }
+
+    /**
+     * 注入RestTemplate Bean
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

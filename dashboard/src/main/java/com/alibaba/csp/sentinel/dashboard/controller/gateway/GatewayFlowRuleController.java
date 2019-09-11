@@ -62,9 +62,6 @@ public class GatewayFlowRuleController {
     private InMemGatewayFlowRuleStore repository;
 
     @Autowired
-    private SentinelApiClient sentinelApiClient;
-
-    @Autowired
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
