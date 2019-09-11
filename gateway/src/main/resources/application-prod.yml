@@ -1,3 +1,9 @@
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+  file: /var/www/gateway.log
 spring:
   cloud:
     gateway:
@@ -14,10 +20,6 @@ spring:
           uri: http://apicache200.517.dev:51707/User/**
           predicates:
             - Path=/User/**
-        - id: test
-          uri: https://www.douyu.com
-          predicates:
-            - Path=/test/**
 #开启actuator管理api，后面要关闭
 management:
   endpoints:

@@ -15,17 +15,14 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule.file;
 
-import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
+
 import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
-import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,26 +39,28 @@ public class FileGatewayRuleProvider {
         if (StringUtil.isBlank(appName)) {
             return new ArrayList<>();
         }
-        List<GatewayFlowRuleEntity> rules = JSON.parseArray(getDatafromFile(),GatewayFlowRuleEntity.class) ;
-        if (rules.isEmpty()) {
+        String value = getDatafromFile();
+        if (value.equals("")) {
             return new ArrayList<>();
         } else {
-            return rules.stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
+            return JSON.parseArray(value,GatewayFlowRuleEntity.class).stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
         }
     }
-    private String getDatafromFile() {
+    private String getDatafromFile() throws IOException {
 
         String ruleDir = DashboardConfig.getConfigStr("user.home") + "/sentinel/rules";
         String gatewayFlowRulePath = ruleDir + "/gateway-flow-rule.json";
+        this.mkdirIfNotExits(ruleDir);
+        this.createFileIfNotExits(gatewayFlowRulePath);
         BufferedReader reader = null;
-        String laststr = "";
+        StringBuilder laststr = new StringBuilder();
         try {
             FileInputStream fileInputStream = new FileInputStream(gatewayFlowRulePath);
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
             reader = new BufferedReader(inputStreamReader);
-            String tempString = null;
+            String tempString;
             while ((tempString = reader.readLine()) != null) {
-                laststr += tempString;
+                laststr.append(tempString);
             }
             reader.close();
         } catch (IOException e) {
@@ -76,8 +75,32 @@ public class FileGatewayRuleProvider {
             }
         }
         System.out.println("文件读取成功："+ laststr);
-        return laststr;
+        return laststr.toString();
     }
 
+    /**
+     * 创建目录
+     *
+     * @param filePath
+     */
+    private void mkdirIfNotExits(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
+
+    /**
+     * 创建文件
+     *
+     * @param filePath
+     * @throws IOException
+     */
+    private void createFileIfNotExits(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+    }
 
 }

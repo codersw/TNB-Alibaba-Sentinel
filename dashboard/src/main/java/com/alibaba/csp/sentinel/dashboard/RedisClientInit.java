@@ -4,7 +4,6 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**

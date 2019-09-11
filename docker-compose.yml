@@ -41,8 +41,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - "JAVA_OPTS=-Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=dashboard -Dcsp.sentinel.api.port=8719"
-      - "server.address=localhost"
+      - "JAVA_OPTS=-Dserver.port=8080 -Dcsp.sentinel.dashboard.server=10.0.75.2:8080 -Dproject.name=dashboard -Dcsp.sentinel.api.port=8719"
     volumes:
       - "${DASH_DIR}/tmp:/tmp/dashboard"
       - "${DASH_DIR}/logs:/root/logs/"
@@ -59,8 +58,7 @@ services:
     ports:
       - "8090:8090"
     environment:
-      - "JAVA_OPTS=-Dserver.port=8090 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=gateway -Dcsp.sentinel.api.port=8720 -Dcsp.api.type=1"
-      - "server.address=localhost"
+      - "JAVA_OPTS=-Dserver.port=8090 -Dcsp.sentinel.dashboard.server=10.0.75.2:8080 -Dproject.name=gateway -Dcsp.sentinel.api.port=8720 -Dcsp.api.type=1"
     volumes:
       - "${GATE_DIR}/tmp:/tmp/gateway"
       - "${GATE_DIR}/logs:/root/logs/"

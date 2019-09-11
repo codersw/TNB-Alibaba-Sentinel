@@ -20,10 +20,8 @@ import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitio
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Component;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,18 +39,20 @@ public class FileGatewayApiProvider {
         if (StringUtil.isBlank(appName)) {
             return new ArrayList<>();
         }
-        List<ApiDefinitionEntity> rules = JSON.parseArray(getDatafromFile(),ApiDefinitionEntity.class) ;
-        if (rules.isEmpty()) {
+        String value = getDatafromFile();
+        if (value.equals("")) {
             return new ArrayList<>();
         } else {
-            return rules.stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
+            return JSON.parseArray(value,ApiDefinitionEntity.class).stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
         }
     }
 
-    private String getDatafromFile() {
+    private String getDatafromFile() throws IOException {
 
         String ruleDir = DashboardConfig.getConfigStr("user.home") + "/sentinel/rules";
         String gatewayFlowRulePath = ruleDir + "/gateway-api-definition.json";
+        this.mkdirIfNotExits(ruleDir);
+        this.createFileIfNotExits(gatewayFlowRulePath);
         BufferedReader reader = null;
         String laststr = "";
         try {
@@ -79,5 +79,28 @@ public class FileGatewayApiProvider {
         return laststr;
     }
 
+    /**
+     * 创建目录
+     *
+     * @param filePath
+     */
+    private void mkdirIfNotExits(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
+    /**
+     * 创建文件
+     *
+     * @param filePath
+     * @throws IOException
+     */
+    private void createFileIfNotExits(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+    }
 }

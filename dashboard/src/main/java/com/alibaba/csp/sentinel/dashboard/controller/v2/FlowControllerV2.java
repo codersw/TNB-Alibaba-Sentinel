@@ -26,13 +26,10 @@ import com.alibaba.csp.sentinel.dashboard.auth.AuthService.PrivilegeType;
 import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
 import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiPublisher;
-import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRuleProvider;
-import com.alibaba.csp.sentinel.dashboard.rule.redis.RedisRulePublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.repository.rule.InMemoryRuleRepositoryAdapter;
-import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
 import com.alibaba.csp.sentinel.dashboard.domain.Result;
 
 import org.slf4j.Logger;

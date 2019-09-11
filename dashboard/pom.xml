@@ -6,18 +6,18 @@
         <groupId>com.alibaba.csp</groupId>
         <artifactId>sentinel-parent</artifactId>
         <version>1.6.3</version>
+        <relativePath/>
     </parent>
 
     <artifactId>dashboard</artifactId>
     <packaging>jar</packaging>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.boot.version>2.0.5.RELEASE</spring.boot.version>
         <curator.version>4.0.1</curator.version>
-        <!-- 设置docker镜像前缀-->
-        <docker.image.prefix>test</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -148,9 +148,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <groupId>com.mango</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -12,5 +12,6 @@
   <modules>
     <module>gateway</module>
     <module>dashboard</module>
+    <module>common</module>
   </modules>
 </project>

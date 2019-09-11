@@ -52,7 +52,7 @@ public class AppController {
     @GetMapping("/briefinfos.json")
     public Result<List<AppInfo>> queryAppInfos(HttpServletRequest request) {
         List<AppInfo> list = new ArrayList<>(appManagement.getBriefApps());
-        Collections.sort(list, Comparator.comparing(AppInfo::getApp));
+        list.sort(Comparator.comparing(AppInfo::getApp));
         return Result.ofSuccess(list);
     }
 
@@ -63,7 +63,7 @@ public class AppController {
             return Result.ofSuccess(null);
         }
         List<MachineInfo> list = new ArrayList<>(appInfo.getMachines());
-        Collections.sort(list, Comparator.comparing(MachineInfo::getApp).thenComparing(MachineInfo::getIp).thenComparingInt(MachineInfo::getPort));
+        list.sort(Comparator.comparing(MachineInfo::getApp).thenComparing(MachineInfo::getIp).thenComparingInt(MachineInfo::getPort));
         return Result.ofSuccess(MachineInfoVo.fromMachineInfoList(list));
     }
     
