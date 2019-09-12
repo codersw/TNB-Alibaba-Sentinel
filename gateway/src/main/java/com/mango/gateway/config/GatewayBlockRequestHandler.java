@@ -24,15 +24,15 @@ public class GatewayBlockRequestHandler implements BlockRequestHandler  {
         GatewayResponse errorResponse = new GatewayResponse();
         // 不同的异常返回不同的提示语
         if (FlowException.isBlockException(t)) {
-            errorResponse = GatewayResponse.builder().msg("接口限流了").build();
+            errorResponse = GatewayResponse.builder().code(-1).msg("接口限流了").build();
         } else if (DegradeException.isBlockException(t)) {
-            errorResponse = GatewayResponse.builder().msg("服务降级了").build();
+            errorResponse = GatewayResponse.builder().code(-1).msg("服务降级了").build();
         } else if (ParamFlowException.isBlockException(t)) {
-            errorResponse = GatewayResponse.builder().msg("热点参数限流了").build();
+            errorResponse = GatewayResponse.builder().code(-1).msg("热点参数限流了").build();
         } else if (ParamFlowException.isBlockException(t)) {
-            errorResponse = GatewayResponse.builder().msg("触发系统保护规则").build();
+            errorResponse = GatewayResponse.builder().code(-1).msg("触发系统保护规则").build();
         } else if (ParamFlowException.isBlockException(t)) {
-            errorResponse = GatewayResponse.builder().msg("授权规则不通过").build();
+            errorResponse = GatewayResponse.builder().code(-1).msg("授权规则不通过").build();
         }
         return ServerResponse.status(HttpStatus.TOO_MANY_REQUESTS.value())
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
