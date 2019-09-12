@@ -201,7 +201,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
 
         function saveRoutes(routes, edit) {
             routes.predicates.forEach( e => {
-                var v = e.value.replace("|",",").replace("，",",");;
+                var v = e.value.replace("|",",").replace("，",",");
                 var arr = v.split(",");
                 e.args = {};
                 arr.forEach( (f,i) =>{
