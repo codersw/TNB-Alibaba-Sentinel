@@ -23,5 +23,5 @@ public class FileConsts {
     //网关API分组
     public final static String GATEWAY_API_DEFINITION = "/gateway-api-definition.json";
     //网关路由匹配规则
-    public final static String GATEWAY_ROUTES = "/geteway-routes.json";
+    public final static String GATEWAY_ROUTES = "/gateway-routes.json";
 }
