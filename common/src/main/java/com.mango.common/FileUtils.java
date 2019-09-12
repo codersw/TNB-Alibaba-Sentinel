@@ -18,7 +18,7 @@ public class FileUtils {
      */
     public static String getDatafromFile(String dir,String path) throws Exception {
         mkdirIfNotExits(dir);
-        createFileIfNotExits(path);
+        createFileIfNotExits(dir + path);
         BufferedReader reader = null;
         StringBuilder laststr = new StringBuilder();
         try {
