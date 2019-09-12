@@ -33,13 +33,12 @@ app.service('GatewayRoutesService', ['$http', function ($http) {
 
   this.deleteRoutes = function (routes) {
     var param = {
-      id: routes.id,
       app: routes.app,
       ip: routes.ip,
       port: routes.port
     };
     return $http({
-      url: '/gateway/flow/'+ param.id ,
+      url: '/gateway/routes/'+ routes.id ,
       params: param,
       method: 'DELETE'
     });

@@ -11,6 +11,7 @@ import com.mango.common.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,8 @@ public class GatewayRoutesCotroller {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final static String ClENIT_URL = "http://${host}:8090/route";
+    @Value("${rest.url}")
+    private String[] restUrl;
 
     @GetMapping("/list")
     public Result<Object> queryRoutes(HttpServletRequest request, String app, String ip, Integer port) {
@@ -56,7 +58,7 @@ public class GatewayRoutesCotroller {
     }
 
     @PostMapping(path = {"/add","/update"})
-    public Result<Object> addRoutes(HttpServletRequest request,@RequestBody JSONObject body) {
+    public Result<Object> addRoutes(HttpServletRequest request, @RequestBody JSONObject body) {
         AuthService.AuthUser authUser = authService.getAuthUser(request);
         authUser.authTarget(body.getString("app"), AuthService.PrivilegeType.ALL);
         if (StringUtil.isEmpty(body.getString("app"))) {
@@ -69,7 +71,9 @@ public class GatewayRoutesCotroller {
             return Result.ofFail(-1, "port can't be null");
         }
         try{
-            restTemplate.postForObject(ClENIT_URL.replace("${host}",body.getString("ip")),body,JSONObject.class);
+            for(String url : restUrl){
+                restTemplate.postForObject(url + request.getServletPath().replace("/gateway","" ), body, JSONObject.class);
+            }
             return Result.ofSuccess(null);
         } catch (Throwable throwable) {
             logger.error("query gateway routes error:", throwable);
@@ -78,7 +82,7 @@ public class GatewayRoutesCotroller {
     }
 
     @DeleteMapping("/{id}")
-    public Result<Object> deleteRoutes(HttpServletRequest request, String app, String ip, Integer port, @PathVariable String id) {
+    public Result<Object> deleteRoutes(HttpServletRequest request, String app, String ip, Integer port) {
         AuthService.AuthUser authUser = authService.getAuthUser(request);
         authUser.authTarget(app, AuthService.PrivilegeType.ALL);
         if (StringUtil.isEmpty(app)) {
@@ -91,7 +95,10 @@ public class GatewayRoutesCotroller {
             return Result.ofFail(-1, "port can't be null");
         }
         try{
-            restTemplate.delete(ClENIT_URL.replace("${host}",ip)+"/"+ id);
+            System.out.println(request.getServletPath());
+            for(String url : restUrl){
+                restTemplate.delete(url + request.getServletPath().replace("/gateway",""));
+            }
             return Result.ofSuccess(null);
         } catch (Throwable throwable) {
             logger.error("query gateway routes error:", throwable);

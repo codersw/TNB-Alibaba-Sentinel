@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 
 @Service

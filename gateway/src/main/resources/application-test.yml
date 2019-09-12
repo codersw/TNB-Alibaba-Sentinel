@@ -1,3 +1,12 @@
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+  file: ${user.home}/gateway.log
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
 spring:
   cloud:
     gateway:
@@ -6,18 +15,10 @@ spring:
         locator:
           lower-case-service-id: true
       routes:
-        - id: test_api
-          uri: http://192.168.4.144:8088/api/**
+        - id: ping
+          uri: http://${csp.sentinel.dashboard.server}/ping
           predicates:
-            - Path=/api/**
-        - id: wcf_api
-          uri: http://apicache200.517.dev:51707/User/**
-          predicates:
-            - Path=/User/**
-        - id: test
-          uri: https://www.douyu.com
-          predicates:
-            - Path=/test/**
+            - Path=/ping
 #开启actuator管理api，后面要关闭
 management:
   endpoints:

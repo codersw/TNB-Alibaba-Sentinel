@@ -4,15 +4,11 @@ import com.mango.gateway.model.GatewayResponse;
 import com.mango.gateway.service.RouteService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.cloud.gateway.support.NotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(value = "/route")
+@RequestMapping(value = "/routes")
 @Log4j2
 public class RouteController {
 
@@ -22,11 +18,11 @@ public class RouteController {
     @GetMapping("/list")
     public GatewayResponse list(){
         try {
-            return GatewayResponse.builder().data(this.routeService.list()).msg("获取网关成功").status(200).build();
+            return GatewayResponse.builder().data(this.routeService.list()).msg("获取网关成功").success(true).build();
         } catch (Exception e){
             log.error(e.getMessage());
             e.printStackTrace();
-            return GatewayResponse.builder().status(100).msg(e.getMessage()).build();
+            return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
 
@@ -34,11 +30,11 @@ public class RouteController {
     public GatewayResponse refresh() {
         try {
             this.routeService.notifyChanged();
-            return GatewayResponse.builder().msg("刷新成功").status(200).build();
+            return GatewayResponse.builder().msg("刷新成功").success(true).build();
         } catch (Exception e){
             log.error(e.getMessage());
             e.printStackTrace();
-            return GatewayResponse.builder().status(100).msg(e.getMessage()).build();
+            return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
 
@@ -46,22 +42,22 @@ public class RouteController {
     public GatewayResponse delete(@PathVariable String id) {
         try {
             this.routeService.delete(id);
-            return GatewayResponse.builder().msg("删除成功").status(200).build();
+            return GatewayResponse.builder().msg("删除成功").success(true).build();
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
-            return GatewayResponse.builder().status(100).msg(e.getMessage()).build();
+            return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
 
     @GetMapping("/{id}")
     public GatewayResponse get(@PathVariable String id) {
         try {
-            return GatewayResponse.builder().msg("获取成功").status(200).data(this.routeService.list().stream().filter(r -> id.equals(r.getId()))).build();
+            return GatewayResponse.builder().msg("获取成功").success(true).data(this.routeService.list().stream().filter(r -> id.equals(r.getId()))).build();
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            return GatewayResponse.builder().status(100).msg(e.getMessage()).build();
+            return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
 
@@ -69,11 +65,11 @@ public class RouteController {
     public GatewayResponse add(@RequestBody RouteDefinition route) {
         try {
             this.routeService.add(route);
-            return GatewayResponse.builder().msg("添加成功").status(200).build();
+            return GatewayResponse.builder().msg("添加成功").success(true).build();
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            return GatewayResponse.builder().status(100).msg(e.getMessage()).build();
+            return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
 
@@ -81,11 +77,11 @@ public class RouteController {
     public GatewayResponse update(@RequestBody RouteDefinition route) {
         try {
             this.routeService.update(route);
-            return GatewayResponse.builder().msg("修改成功").status(200).build();
+            return GatewayResponse.builder().msg("修改成功").success(true).build();
         } catch (Exception e) {
             e.printStackTrace();
             log.error(e.getMessage());
-            return GatewayResponse.builder().status(100).msg(e.toString()).build();
+            return GatewayResponse.builder().code(-1).msg(e.toString()).build();
         }
     }
 }

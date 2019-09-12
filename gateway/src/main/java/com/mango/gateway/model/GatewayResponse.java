@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public
-class GatewayResponse {
-    private Integer status;
+public class GatewayResponse<R> {
+    private boolean success;
+    private int code;
     private String msg;
-    private Object data;
+    private R data;
 }

@@ -3,7 +3,7 @@
     <span style="font-size: 30px;font-weight: bold;">{{app}}</span>
   </div>
   <div class="col-md-6">
-    <button class="btn btn-outline-primary" style="float: right; margin-right: 10px;" ng-disabled="!macInputModel" ng-click="addNewRule()">
+    <button class="btn btn-outline-primary" style="float: right; margin-right: 10px;" ng-disabled="!macInputModel" ng-click="addNewRoutes()">
       <i class="fa fa-plus"></i>&nbsp;&nbsp;新增路由规则</button>
   </div>
 </div>
@@ -16,7 +16,7 @@
       <div class="card">
         <div class="inputs-header">
           <span class="brand" style="font-size: 13px;">路由规则</span>
-          <button class="btn btn-primary" style="float: right; margin-right: 10px; height: 30px;font-size: 12px;" ng-click="getMachineRules()">刷新</button>
+          <button class="btn btn-primary" style="float: right; margin-right: 10px; height: 30px;font-size: 12px;" ng-click="getMachineRoutes()">刷新</button>
           <input class="form-control witdh-200" placeholder="关键字" ng-model="searchKey">
           <div class="control-group" style="float:right;margin-right: 10px;margin-bottom: -10px;">
             <selectize id="gsInput" class="selectize-input-200" config="macsInputConfig" options="macsInputOptions" ng-model="macInputModel"
@@ -25,7 +25,7 @@
         </div>
 
         <!--.tools-header -->
-        <div class="card-body" style="padding: 0px 0px;">
+        <div class="card-body" style="padding: 0 0;">
           <table class="table" style="border-left: none; border-right:none;margin-top: 10px;">
             <thead>
               <tr style="background: #F3F5F7;">
@@ -33,10 +33,10 @@
                   路由 ID
                 </td>
                 <td>
-                  本机规则
+                  目标地址
                 </td>
                 <td>
-                  目标地址
+                  本机规则
                 </td>
                 <td>
                   操作
@@ -48,11 +48,11 @@
               <tr dir-paginate="route in routes | filter: searchKey | itemsPerPage: routesPageConfig.pageSize " current-page="routesPageConfig.currentPageIndex"
                   pagination-id="entriesPagination">
                 <td>{{route.id}}</td>
-                <td>{{route.predicates[0].args.pattern}}</td>
                 <td>{{route.uri}}</td>
+                <td>{{route.predicates[0].value}}</td>
                 <td>
-                  <button class="btn btn-xs btn-outline-primary" type="button" ng-click="editRoutes(rule)" style="font-size: 12px; height:25px;">编辑</button>
-                  <button class="btn btn-xs btn-outline-danger" type="button" ng-click="deleteRoutes(rule)" style="font-size: 12px; height:25px;">删除</button>
+                  <button class="btn btn-xs btn-outline-primary" type="button" ng-click="editRoutes(route)" style="font-size: 12px; height:25px;">编辑</button>
+                  <button class="btn btn-xs btn-outline-danger" type="button" ng-click="deleteRoutes(route)" style="font-size: 12px; height:25px;">删除</button>
                 </td>
               </tr>
             </tbody>

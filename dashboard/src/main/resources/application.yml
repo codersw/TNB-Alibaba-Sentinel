@@ -9,7 +9,7 @@ spring:
       charset: UTF-8
       enabled: true
   profiles:
-    active: prod
+    active: dev
 sentinel:
   dashboard:
     version: ${project.version}

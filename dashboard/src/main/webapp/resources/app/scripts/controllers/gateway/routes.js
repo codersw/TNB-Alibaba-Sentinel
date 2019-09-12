@@ -26,8 +26,8 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
             }
         };
 
-        getMachineRules();
-        function getMachineRules() {
+        getMachineRoutes();
+        function getMachineRoutes() {
             if (!$scope.macInputModel) {
                 return;
             }
@@ -35,8 +35,13 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
             var mac = $scope.macInputModel.split(':');
             GatewayRoutesService.queryRoutes($scope.app, mac[0], mac[1]).success(
                 function (data) {
-                    if (data.code == 0 && data.data) {
+                    if (data.code === 0 && data.data) {
                         $scope.routes = data.data;
+                        $scope.routes.forEach( e => {
+                            e.predicates.forEach( f => {
+                                f.value = JSON.stringify(f.args);
+                            });
+                        });
                         $scope.routesPageConfig.totalCount = $scope.routes.length;
                     } else {
                         $scope.routes = [];
@@ -44,7 +49,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     }
                 });
         };
-        $scope.getMachineRules = getMachineRules;
+        $scope.getMachineRoutes = getMachineRoutes;
 
         getApiNames();
         function getApiNames() {
@@ -55,7 +60,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
             var mac = $scope.macInputModel.split(':');
             GatewayApiService.queryApis($scope.app, mac[0], mac[1]).success(
                 function (data) {
-                    if (data.code == 0 && data.data) {
+                    if (data.code === 0 && data.data) {
                         $scope.apiNames = [];
 
                         data.data.forEach(function (api) {
@@ -64,8 +69,6 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     }
                 });
         }
-
-        $scope.intervalUnits = [{val: 0, desc: '秒'}, {val: 1, desc: '分'}, {val: 2, desc: '时'}, {val: 3, desc: '天'}];
 
         var gatewayRoutesDialog;
         $scope.editRoutes = function (rule) {
@@ -76,14 +79,14 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                 confirmBtnText: '保存'
             };
             gatewayRoutesDialog = ngDialog.open({
-                template: '/app/views/dialog/gateway/flow-rule-dialog.html',
+                template: '/app/views/dialog/gateway/routes-dialog.html',
                 width: 780,
                 overlay: true,
                 scope: $scope
             });
         };
 
-        $scope.addNewRule = function () {
+        $scope.addNewRoutes = function () {
             var mac = $scope.macInputModel.split(':');
             $scope.currentRoutes = {
                 grade: 1,
@@ -105,7 +108,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
             };
 
             gatewayRoutesDialog = ngDialog.open({
-                template: '/app/views/dialog/gateway/flow-rule-dialog.html',
+                template: '/app/views/dialog/gateway/routes-dialog.html',
                 width: 780,
                 overlay: true,
                 scope: $scope
@@ -114,11 +117,31 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
 
         $scope.saveRoutes = function () {
 
-            if ($scope.gatewayFlowRuleDialog.type === 'add') {
-                GatewayRoutesService.addRoutes($scope.currentRule);
-            } else if ($scope.gatewayFlowRuleDialog.type === 'edit') {
-                GatewayRoutesService.updateRoutes($scope.currentRule, true);
+            if ($scope.gatewayRoutesDialog.type === 'add') {
+                addNewRoutes($scope.currentRoutes);
+            } else if ($scope.gatewayRoutesDialog.type === 'edit') {
+                saveRoutes($scope.currentRoutes, true);
             }
+        };
+
+        $scope.addNewMatchPattern = function() {
+            var total;
+            if ($scope.currentRoutes.predicates == null) {
+                $scope.currentRoutes.predicates = [];
+                total = 0;
+            } else {
+                total = $scope.currentRoutes.predicates.length;
+            }
+            $scope.currentRoutes.predicates.splice(total + 1, 0, {name : '', value: ''});
+        };
+
+        $scope.removeMatchPattern = function($index) {
+            if ($scope.currentRoutes.predicates.length <= 1) {
+                // Should never happen since no remove button will display when only one predicateItem.
+                alert('至少有一个路由规则');
+                return;
+            }
+            $scope.currentRoutes.predicates.splice($index, 1);
         };
 
         $scope.useRouteID = function() {
@@ -151,9 +174,16 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         };
 
         function addNewRoutes(routes) {
+            routes.predicates.forEach( e => {
+              e.args = JSON.parse(e.value);
+            });
+            var mac = $scope.macInputModel.split(':');
+            routes.app = $scope.app;
+            routes.ip = mac[0];
+            routes.port = mac[1];
             GatewayRoutesService.addRoutes(routes).success(function (data) {
                 if (data.code === 0) {
-                    getMachineRules();
+                    getMachineRoutes();
                     gatewayRoutesDialog.close();
                 } else {
                     alert('新增路由规则失败!' + data.msg);
@@ -162,9 +192,16 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         };
 
         function saveRoutes(routes, edit) {
+            routes.predicates.forEach( e => {
+                e.args = JSON.parse(e.value);
+            });
+            var mac = $scope.macInputModel.split(':');
+            routes.app = $scope.app;
+            routes.ip = mac[0];
+            routes.port = mac[1];
             GatewayRoutesService.updateRoutes(routes).success(function (data) {
                 if (data.code === 0) {
-                    getMachineRules();
+                    getMachineRoutes();
                     if (edit) {
                         gatewayRoutesDialog.close();
                     } else {
@@ -195,16 +232,20 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
 
         $scope.confirm = function () {
             if ($scope.confirmDialog.type === 'delete_routes') {
-                deleteRule($scope.currentRule);
+                deleteRoutes($scope.currentRoutes);
             } else {
                 console.error('error');
             }
         };
 
         function deleteRoutes(routes) {
-            GatewayFlowService.deleteRoutes(routes).success(function (data) {
+            var mac = $scope.macInputModel.split(':');
+            routes.app = $scope.app;
+            routes.ip = mac[0];
+            routes.port = mac[1];
+            GatewayRoutesService.deleteRoutes(routes).success(function (data) {
                 if (data.code === 0) {
-                    getMachineRules();
+                    getMachineRoutes();
                     confirmDialog.close();
                 } else {
                     alert('删除路由规则失败!' + data.msg);
@@ -217,7 +258,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         function queryAppMachines() {
             MachineService.getAppMachines($scope.app).success(
                 function (data) {
-                    if (data.code == 0) {
+                    if (data.code === 0) {
                         if (data.data) {
                             $scope.machines = [];
                             $scope.macsInputOptions = [];
@@ -241,7 +282,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         };
         $scope.$watch('macInputModel', function () {
             if ($scope.macInputModel) {
-                getMachineRules();
+                getMachineRoutes();
                 getApiNames();
             }
         });
