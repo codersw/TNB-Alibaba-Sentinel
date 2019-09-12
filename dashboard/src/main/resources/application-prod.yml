@@ -14,5 +14,5 @@ auth:
   username: 'mango'
   password: 'sentinel'
 rest:
-  url: 'http://192.168.4.162:8090'
+  url: 'http://192.168.4.169:8090'
 
