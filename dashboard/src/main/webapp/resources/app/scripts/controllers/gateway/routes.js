@@ -39,7 +39,11 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                         $scope.routes = data.data;
                         $scope.routes.forEach( e => {
                             e.predicates.forEach( f => {
-                                f.value = JSON.stringify(f.args);
+                                var value = "";
+                                for(var key in f.args){
+                                    value += f.args[key] + ",";
+                                }
+                                f.value = value === "" ? "" : value.substring(0,value.length-1);
                             });
                         });
                         $scope.routesPageConfig.totalCount = $scope.routes.length;
@@ -62,7 +66,6 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                 function (data) {
                     if (data.code === 0 && data.data) {
                         $scope.apiNames = [];
-
                         data.data.forEach(function (api) {
                             $scope.apiNames.push(api["apiName"]);
                         });
@@ -89,16 +92,16 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         $scope.addNewRoutes = function () {
             var mac = $scope.macInputModel.split(':');
             $scope.currentRoutes = {
-                grade: 1,
                 app: $scope.app,
                 ip: mac[0],
                 port: mac[1],
-                resourceMode: 0,
-                interval: 1,
-                intervalUnit: 0,
-                controlBehavior: 0,
-                burst: 0,
-                maxQueueingTimeoutMs: 0
+                id: "",
+                uri: "",
+                predicates: [{
+                    name: "Path",
+                    value: "",
+                    args: {}
+                }]
             };
 
             $scope.gatewayRoutesDialog = {
@@ -175,7 +178,12 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
 
         function addNewRoutes(routes) {
             routes.predicates.forEach( e => {
-              e.args = JSON.parse(e.value);
+                var v = e.value.replace("|",",").replace("，",",");
+                var arr = v.split(",");
+                e.args = {};
+                arr.forEach( (f,i) =>{
+                    e.args["_genkey_"+i] = f;
+                });
             });
             var mac = $scope.macInputModel.split(':');
             routes.app = $scope.app;
@@ -193,7 +201,12 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
 
         function saveRoutes(routes, edit) {
             routes.predicates.forEach( e => {
-                e.args = JSON.parse(e.value);
+                var v = e.value.replace("|",",").replace("，",",");;
+                var arr = v.split(",");
+                e.args = {};
+                arr.forEach( (f,i) =>{
+                    e.args["_genkey_"+i] = f;
+                });
             });
             var mac = $scope.macInputModel.split(':');
             routes.app = $scope.app;

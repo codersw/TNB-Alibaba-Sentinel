@@ -4,7 +4,7 @@
   </div>
   <div class="col-md-6">
     <button class="btn btn-outline-primary" style="float: right; margin-right: 10px;" ng-disabled="!macInputModel" ng-click="addNewRoutes()">
-      <i class="fa fa-plus"></i>&nbsp;&nbsp;新增路由规则</button>
+      <i class="fa fa-plus"></i>&nbsp;&nbsp;新增路由</button>
   </div>
 </div>
 
@@ -15,7 +15,7 @@
     <div class="col-md-12">
       <div class="card">
         <div class="inputs-header">
-          <span class="brand" style="font-size: 13px;">路由规则</span>
+          <span class="brand" style="font-size: 13px;">路由管理</span>
           <button class="btn btn-primary" style="float: right; margin-right: 10px; height: 30px;font-size: 12px;" ng-click="getMachineRoutes()">刷新</button>
           <input class="form-control witdh-200" placeholder="关键字" ng-model="searchKey">
           <div class="control-group" style="float:right;margin-right: 10px;margin-bottom: -10px;">
@@ -36,8 +36,11 @@
                   目标地址
                 </td>
                 <td>
-                  本机规则
+                  匹配规则
                 </td>
+<!--                <td>-->
+<!--                  过滤规则-->
+<!--                </td>-->
                 <td>
                   操作
                 </td>
@@ -50,6 +53,7 @@
                 <td>{{route.id}}</td>
                 <td>{{route.uri}}</td>
                 <td>{{route.predicates[0].value}}</td>
+<!--                <td>{{route.filter[0].value}}</td>-->
                 <td>
                   <button class="btn btn-xs btn-outline-primary" type="button" ng-click="editRoutes(route)" style="font-size: 12px; height:25px;">编辑</button>
                   <button class="btn btn-xs btn-outline-danger" type="button" ng-click="deleteRoutes(route)" style="font-size: 12px; height:25px;">删除</button>
