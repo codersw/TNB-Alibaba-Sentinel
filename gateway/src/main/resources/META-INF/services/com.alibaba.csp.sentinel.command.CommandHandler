@@ -1,0 +1,3 @@
+com.mango.gateway.command.UpdateGatewayRoutesCommandHandler
+com.mango.gateway.command.DeleteGatewayRoutesCommandHandler
+com.mango.gateway.command.SetGatewayRoutesCommandHandler

@@ -52,9 +52,6 @@ public class RouteService implements ApplicationEventPublisherAware {
     public void add(RouteDefinition definition) throws Exception{
         routeDefinitionWriter.save(Mono.just(definition)).subscribe();
         notifyChanged();
-        List<RouteDefinition> array = list();
-        array.add(definition);
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_ROUTES, JSON.toJSONString(array));
     }
 
     /**
@@ -65,10 +62,6 @@ public class RouteService implements ApplicationEventPublisherAware {
         this.routeDefinitionWriter.delete(Mono.just(definition.getId()));
         this.routeDefinitionWriter.save(Mono.just(definition)).subscribe();
         notifyChanged();
-        List<RouteDefinition> array = list();
-        array.removeIf( r -> r.getId().equals(definition.getId()));
-        array.add(definition);
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_ROUTES, JSON.toJSONString(array));
     }
 
     /**
@@ -77,11 +70,8 @@ public class RouteService implements ApplicationEventPublisherAware {
      * @return
      */
     public void delete(String id) throws Exception{
-        this.routeDefinitionWriter.delete(Mono.just(id));
+        this.routeDefinitionWriter.delete(Mono.just(id)).subscribe();
         notifyChanged();
-        List<RouteDefinition> array = list();
-        array.removeIf( r -> r.getId().equals(id));
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_ROUTES, JSON.toJSONString(array));
     }
 
     @Override

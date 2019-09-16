@@ -36,6 +36,7 @@ import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.command.vo.NodeVo;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.RouteDefinitionEntity;
 import com.alibaba.csp.sentinel.dashboard.util.AsyncUtils;
 import com.alibaba.csp.sentinel.slots.block.Rule;
 import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
@@ -117,6 +118,9 @@ public class SentinelApiClient {
 
     private static final String FETCH_GATEWAY_FLOW_RULE_PATH = "gateway/getRules";
     private static final String MODIFY_GATEWAY_FLOW_RULE_PATH = "gateway/updateRules";
+    private static final String SET_GATEWAY_ROUTES_PATH = "gateway/setRoutes";
+    private static final String MODIFY_GATEWAY_ROUTES_PATH = "gateway/updateRoutes";
+    private static final String DELETE_GATEWAY_ROUTES_PATH = "gateway/deleteRoutes";
 
     private static final String FLOW_RULE_TYPE = "flow";
     private static final String DEGRADE_RULE_TYPE = "degrade";
@@ -766,9 +770,9 @@ public class SentinelApiClient {
         }
     }
 
-    public boolean modifyGatewayFlowRules(String app, String ip, int port, List<GatewayFlowRuleEntity> rules) {
+    public void modifyGatewayFlowRules(String app, String ip, int port, List<GatewayFlowRuleEntity> rules) {
         if (rules == null) {
-            return true;
+            return;
         }
 
         try {
@@ -781,10 +785,61 @@ public class SentinelApiClient {
             params.put("data", data);
             String result = executeCommand(app, ip, port, MODIFY_GATEWAY_FLOW_RULE_PATH, params, true).get();
             logger.info("Modify gateway flow rules: {}", result);
-            return true;
         } catch (Exception e) {
             logger.warn("Error when modifying gateway apis", e);
-            return false;
+        }
+    }
+
+    public void modifyRoutes(String app, String ip, int port, RouteDefinitionEntity route){
+        if (route == null) {
+            return;
+        }
+        try {
+            AssertUtil.notEmpty(app, "Bad app name");
+            AssertUtil.notEmpty(ip, "Bad machine IP");
+            AssertUtil.isTrue(port > 0, "Bad machine port");
+            String data = JSON.toJSONString(route);
+            Map<String, String> params = new HashMap<>(2);
+            params.put("data", data);
+            String result = executeCommand(app, ip, port, MODIFY_GATEWAY_ROUTES_PATH, params, true).get();
+            logger.info("Modify gateway Routes: {}", result);
+        } catch (Exception e) {
+            logger.warn("Error when modifying gateway Routes", e);
+        }
+    }
+
+    public void setRoutes(String app, String ip, int port, RouteDefinitionEntity route){
+        if (route == null) {
+            return;
+        }
+        try {
+            AssertUtil.notEmpty(app, "Bad app name");
+            AssertUtil.notEmpty(ip, "Bad machine IP");
+            AssertUtil.isTrue(port > 0, "Bad machine port");
+            String data = JSON.toJSONString(route);
+            Map<String, String> params = new HashMap<>(2);
+            params.put("data", data);
+            String result = executeCommand(app, ip, port, SET_GATEWAY_ROUTES_PATH, params, true).get();
+            logger.info("Modify gateway Routes: {}", result);
+        } catch (Exception e) {
+            logger.warn("Error when modifying gateway Routes", e);
+        }
+    }
+
+    public void deleteRoutes(String app, String ip, int port, String id){
+        if (id == null || id.equals("")) {
+            return;
+        }
+        try {
+            AssertUtil.notEmpty(app, "Bad app name");
+            AssertUtil.notEmpty(ip, "Bad machine IP");
+            AssertUtil.isTrue(port > 0, "Bad machine port");
+            Map<String, String> params = new HashMap<>(2);
+            params.put("data", id);
+            String result = executeCommand(app, ip, port, DELETE_GATEWAY_ROUTES_PATH, params, true).get();
+            logger.info("Modify gateway Routes: {}", result);
+        } catch (Exception e) {
+            logger.warn("Error when modifying gateway Routes", e);
         }
     }
 }

@@ -45,8 +45,8 @@ public class DashboardApplication {
     /**
      * 注入RestTemplate Bean
      */
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+    //@Bean
+    //public RestTemplate restTemplate() {
+    //    return new RestTemplate();
+    //}
 }

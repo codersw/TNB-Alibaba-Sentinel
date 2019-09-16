@@ -7,7 +7,7 @@ package com.mango.common;
 public class FileConsts {
 
     //存入目录
-    public final static String DIR = "/sentinel/rules";
+    public final static String DIR = "/sentinel";
     //限流规则
     public final static String FLOW_RULE = "/flow-rule.json";
     //降级规则
@@ -24,4 +24,8 @@ public class FileConsts {
     public final static String GATEWAY_API_DEFINITION = "/gateway-api-definition.json";
     //网关路由匹配规则
     public final static String GATEWAY_ROUTES = "/gateway-routes.json";
+    //网关降级规则
+    public final static String GATEWAY_DEGRADE_RULE = "/gateway-degrade-rule.json";
+    //网关系统规则
+    public final static String GATEWAY_SYSTEM_RULE = "/gateway-system-rule.json";
 }

@@ -1,9 +1,11 @@
+user:
+  home: /var/www
 logging:
   level:
     org:
       springframework:
         web: INFO,ERROR
-  file:  /var/www/dashboard.log
+  file: ${user.home}/dashboard.log
   pattern:
     file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
     console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
@@ -13,6 +15,4 @@ auth:
     exclude-url-suffixes: 'htm,html,js,css,map,ico,ttf,woff,png'
   username: 'mango'
   password: 'sentinel'
-rest:
-  url: 'http://192.168.4.169:8090'
 

@@ -1,9 +1,11 @@
+user:
+  home: /var/www
 logging:
   level:
     org:
       springframework:
         web: INFO,ERROR
-  file: /var/www/gateway.log
+  file: ${user.home}/gateway.log
   pattern:
     file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
     console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'

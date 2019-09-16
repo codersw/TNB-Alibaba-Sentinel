@@ -58,9 +58,6 @@ public class GatewayApiController {
     private InMemApiDefinitionStore repository;
 
     @Autowired
-    private SentinelApiClient sentinelApiClient;
-
-    @Autowired
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
@@ -87,7 +84,7 @@ public class GatewayApiController {
         }
 
         try {
-            List<ApiDefinitionEntity> apis = ruleProvider.getRules(app);
+            List<ApiDefinitionEntity> apis = ruleProvider.getRules(app,ip,port);
             apis = repository.saveAll(apis);
             return Result.ofSuccess(apis);
         } catch (Throwable throwable) {

@@ -88,7 +88,7 @@ public class GatewayFlowRuleController {
         }
 
         try {
-            List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app);
+            List<GatewayFlowRuleEntity> rules = ruleProvider.getRules(app,ip,port);
             rules = repository.saveAll(rules);
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {

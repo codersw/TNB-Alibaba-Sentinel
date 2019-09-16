@@ -35,15 +35,15 @@ import java.util.stream.Collectors;
 @Component("fileGatewayRuleProvider")
 public class FileGatewayRuleProvider {
 
-    public List<GatewayFlowRuleEntity> getRules(String appName) throws Exception {
-        if (StringUtil.isBlank(appName)) {
+    public List<GatewayFlowRuleEntity> getRules(String app, String ip, Integer port) throws Exception {
+        if (StringUtil.isBlank(app)) {
             return new ArrayList<>();
         }
         String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_FLOW_RULE);
         if (value.equals("")) {
             return new ArrayList<>();
         } else {
-            return JSON.parseArray(value,GatewayFlowRuleEntity.class).stream().filter(rule -> rule.getApp().equals(appName)).collect(Collectors.toList());
+            return JSON.parseArray(value,GatewayFlowRuleEntity.class).stream().filter(rule -> rule.getApp().equals(app) && rule.getIp().equals(ip) && rule.getPort().equals(port)).collect(Collectors.toList());
         }
     }
 }

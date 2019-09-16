@@ -64,7 +64,7 @@ public class GatewayFlowRuleEntity implements RuleEntity {
 
     private GatewayParamFlowItemEntity paramItem;
 
-    public static Long calIntervalSec(Long interval, Integer intervalUnit) {
+    private static Long calIntervalSec(Long interval, Integer intervalUnit) {
         switch (intervalUnit) {
             case INTERVAL_UNIT_SECOND:
                 return interval;
@@ -81,7 +81,7 @@ public class GatewayFlowRuleEntity implements RuleEntity {
         throw new IllegalArgumentException("Invalid intervalUnit: " + intervalUnit);
     }
 
-    public static Object[] parseIntervalSec(Long intervalSec) {
+    private static Object[] parseIntervalSec(Long intervalSec) {
         if (intervalSec % (60 * 60 * 24) == 0) {
             return new Object[] {intervalSec / (60 * 60 * 24), INTERVAL_UNIT_DAY};
         }

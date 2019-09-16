@@ -1,3 +1,5 @@
+user:
+  home: ${user.home}
 logging:
   level:
     org:
@@ -10,9 +12,9 @@ logging:
 spring:
   cloud:
     gateway:
-      enabled: true
       discovery:
         locator:
+          enabled: true
           lower-case-service-id: true
       routes:
         - id: ping
