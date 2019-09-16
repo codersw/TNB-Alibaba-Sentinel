@@ -143,6 +143,16 @@ public class GatewayDegradeController {
                                                      Long id, String app, String ip, Integer port, String limitApp, String resource,
                                                      Double count, Integer timeWindow, Integer grade) {
         AuthUser authUser = authService.getAuthUser(request);
+        authUser.authTarget(app, PrivilegeType.WRITE_RULE);
+        if (StringUtil.isBlank(app)) {
+            return Result.ofFail(-1, "app can't be null or empty");
+        }
+        if (StringUtil.isBlank(ip)) {
+            return Result.ofFail(-1, "ip can't be null or empty");
+        }
+        if (port == null) {
+            return Result.ofFail(-1, "port can't be null");
+        }
         if (id == null) {
             return Result.ofFail(-1, "id can't be null");
         }

@@ -36,6 +36,9 @@ app.service('GatewayDegradeService', ['$http', function ($http) {
   this.saveRule = function (rule) {
     var param = {
       id: rule.id,
+      app: rule.app,
+      ip: rule.ip,
+      port: rule.port,
       resource: rule.resource,
       limitApp: rule.limitApp,
       grade: rule.grade,

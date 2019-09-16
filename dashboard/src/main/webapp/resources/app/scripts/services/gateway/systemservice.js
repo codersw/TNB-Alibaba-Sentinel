@@ -8,7 +8,7 @@ app.service('GatewaySystemService', ['$http', function ($http) {
       port: port
     };
     return $http({
-      url: 'system/rules',
+      url: '/gateway/system/rules',
       params: param,
       method: 'GET'
     });
@@ -20,6 +20,7 @@ app.service('GatewaySystemService', ['$http', function ($http) {
       ip: rule.ip,
       port: rule.port
     };
+    rule.grade = parseInt(rule.grade);
     if (rule.grade === 0) {// avgLoad
       param.highestSystemLoad = rule.highestSystemLoad;
     } else if (rule.grade === 1) {// avgRt
@@ -33,7 +34,7 @@ app.service('GatewaySystemService', ['$http', function ($http) {
     }
 
     return $http({
-      url: '/system/new',
+      url: '/gateway/system/new',
       params: param,
       method: 'GET'
     });
@@ -42,6 +43,9 @@ app.service('GatewaySystemService', ['$http', function ($http) {
   this.saveRule = function (rule) {
     var param = {
       id: rule.id,
+      app: rule.app,
+      ip: rule.ip,
+      port: rule.port
     };
     if (rule.grade === 0) {// avgLoad
       param.highestSystemLoad = rule.highestSystemLoad;
@@ -56,7 +60,7 @@ app.service('GatewaySystemService', ['$http', function ($http) {
     }
 
     return $http({
-      url: '/system/save',
+      url: '/gateway/system/save',
       params: param,
       method: 'GET'
     });
@@ -69,7 +73,7 @@ app.service('GatewaySystemService', ['$http', function ($http) {
     };
 
     return $http({
-      url: '/system/delete',
+      url: '/gateway/system/delete',
       params: param,
       method: 'GET'
     });

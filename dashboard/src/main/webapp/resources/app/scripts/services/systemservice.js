@@ -20,6 +20,7 @@ app.service('SystemService', ['$http', function ($http) {
       ip: rule.ip,
       port: rule.port
     };
+    rule.grade = parseInt(rule.grade);
     if (rule.grade === 0) {// avgLoad
       param.highestSystemLoad = rule.highestSystemLoad;
     } else if (rule.grade === 1) {// avgRt

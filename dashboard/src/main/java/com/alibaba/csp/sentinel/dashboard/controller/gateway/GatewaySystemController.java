@@ -183,11 +183,20 @@ public class GatewaySystemController {
 
     @GetMapping("/save")
     public Result<SystemRuleEntity> apiUpdateIfNotNull(HttpServletRequest request,
-                                        Long id, String app, Double highestSystemLoad, Double highestCpuUsage,
+                                        Long id, String app, String ip, Integer port, Double highestSystemLoad, Double highestCpuUsage,
                                         Long avgRt, Long maxThread, Double qps) {
         AuthUser authUser = authService.getAuthUser(request);
         if (id == null) {
             return Result.ofFail(-1, "id can't be null");
+        }
+        if (StringUtil.isBlank(app)) {
+            return Result.ofFail(-1, "app can't be null or empty");
+        }
+        if (StringUtil.isBlank(ip)) {
+            return Result.ofFail(-1, "ip can't be null or empty");
+        }
+        if (port == null) {
+            return Result.ofFail(-1, "port can't be null");
         }
         SystemRuleEntity entity = repository.findById(id);
         if (entity == null) {
