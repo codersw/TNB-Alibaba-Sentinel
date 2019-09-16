@@ -46,7 +46,7 @@ public class FileGatewayApiPublisher {
             return;
         }
         sentinelApiClient.modifyApis(app, ip, port, apis);
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_API_DEFINITION,JSON.toJSONString(apis));
+        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR, FileConsts.GATEWAY_API_DEFINITION,JSON.toJSONString(apis));
     }
 
 }

@@ -59,7 +59,7 @@ public class RouteService implements ApplicationEventPublisherAware {
      * @param definition
      */
     public void update(RouteDefinition definition) throws Exception {
-        this.routeDefinitionWriter.delete(Mono.just(definition.getId()));
+        this.routeDefinitionWriter.delete(Mono.just(definition.getId())).subscribe();
         this.routeDefinitionWriter.save(Mono.just(definition)).subscribe();
         notifyChanged();
     }

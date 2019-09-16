@@ -39,7 +39,7 @@ public class FileGatewayRuleProvider {
         if (StringUtil.isBlank(app)) {
             return new ArrayList<>();
         }
-        String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_FLOW_RULE);
+        String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_FLOW_RULE);
         if (value.equals("")) {
             return new ArrayList<>();
         } else {

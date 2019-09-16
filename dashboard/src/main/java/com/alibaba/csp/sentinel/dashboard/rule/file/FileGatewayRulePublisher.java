@@ -46,7 +46,7 @@ public class FileGatewayRulePublisher {
             return;
         }
         sentinelApiClient.modifyGatewayFlowRules(app, ip, port, rules);
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_FLOW_RULE,JSON.toJSONString(rules));
+        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR, FileConsts.GATEWAY_FLOW_RULE, JSON.toJSONString(rules));
     }
 
 }

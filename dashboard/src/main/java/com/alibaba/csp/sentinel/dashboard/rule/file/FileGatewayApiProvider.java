@@ -42,7 +42,7 @@ public class FileGatewayApiProvider {
         if (StringUtil.isBlank(app)) {
             return new ArrayList<>();
         }
-        String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR ,FileConsts.GATEWAY_API_DEFINITION);
+        String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR, FileConsts.GATEWAY_API_DEFINITION);
         if (value.equals("")) {
             return new ArrayList<>();
         } else {
