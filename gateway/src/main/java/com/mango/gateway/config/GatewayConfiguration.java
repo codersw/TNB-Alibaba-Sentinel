@@ -10,6 +10,7 @@ import com.alibaba.csp.sentinel.adapter.gateway.sc.exception.SentinelGatewayBloc
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
+import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -71,6 +72,12 @@ public class GatewayConfiguration {
                 source -> JSON.parseObject(source, new TypeReference<Set<GatewayFlowRule>>() {})
         );
         GatewayRuleManager.register2Property(gatewayFlowRuleDS.getProperty());
+        // 降级规则
+        ReadableDataSource<String, List<DegradeRule>> degradeRuleRDS = new FileRefreshableDataSource<>(
+                SentinelConfig.getConfig("user.home") + FileConsts.DIR + FileConsts.GATEWAY_DEGRADE_RULE,
+                source -> JSON.parseObject(source, new TypeReference<List<DegradeRule>>() {})
+        );
+        DegradeRuleManager.register2Property(degradeRuleRDS.getProperty());
         GatewayCallbackManager.setBlockHandler(new GatewayBlockRequestHandler());
     }
 

@@ -32,7 +32,7 @@ import java.util.List;
  * 所以自己封装写入文件
  * @author shaowen
  */
-@Component("fileGatewayRulePublisher")
+@Component
 public class FileGatewayRulePublisher {
 
     @Autowired

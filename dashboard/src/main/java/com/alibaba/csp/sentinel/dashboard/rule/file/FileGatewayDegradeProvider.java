@@ -17,36 +17,35 @@ package com.alibaba.csp.sentinel.dashboard.rule.file;
 
 
 import com.alibaba.csp.sentinel.config.SentinelConfig;
-import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.DegradeRuleEntity;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 import com.mango.common.FileConsts;
 import com.mango.common.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * sentinel没有封装写入文件方法
- * 所以自己封装写入文件
+ * sentinel没有封装网关规则读取文件方法
+ * 所以自己封装读取文件
  * @author shaowen
  */
 @Component
-public class FileGatewayApiPublisher {
+public class FileGatewayDegradeProvider {
 
-    @Autowired
-    private SentinelApiClient sentinelApiClient;
-
-    public void publish(String app, String ip, int port, List<ApiDefinitionEntity> apis) throws Exception {
+    public List<DegradeRuleEntity> getRules(String app, String ip, Integer port) throws Exception {
         if (StringUtil.isBlank(app)) {
-            return;
+            return new ArrayList<>();
         }
-        if (apis == null) {
-            return;
+        String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_DEGRADE_RULE);
+        if (value.equals("")) {
+            return new ArrayList<>();
+        } else {
+            return JSON.parseArray(value,DegradeRuleEntity.class).stream().filter(rule -> rule.getApp().equals(app) && rule.getIp().equals(ip) && rule.getPort().equals(port)).collect(Collectors.toList());
         }
-        sentinelApiClient.modifyApis(app, ip, port, apis);
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR, FileConsts.GATEWAY_API_DEFINITION,JSON.toJSONString(apis));
     }
-
 }

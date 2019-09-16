@@ -15,38 +15,40 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule.file;
 
-
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.DegradeRuleEntity;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 import com.mango.common.FileConsts;
 import com.mango.common.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
+
 /**
- * sentinel没有封装写入文件方法
+ * sentinel没有封装网关规则写入文件方法
  * 所以自己封装写入文件
  * @author shaowen
  */
-@Component
-public class FileGatewayApiPublisher {
+@Component("fileGatewayDegradePublisher")
+public class FileGatewayDegradePublisher {
 
     @Autowired
     private SentinelApiClient sentinelApiClient;
 
-    public void publish(String app, String ip, int port, List<ApiDefinitionEntity> apis) throws Exception {
+    public void publish(String app, String ip, int port, List<DegradeRuleEntity> rules) throws Exception {
         if (StringUtil.isBlank(app)) {
             return;
         }
-        if (apis == null) {
+        if (rules == null) {
             return;
         }
-        sentinelApiClient.modifyApis(app, ip, port, apis);
-        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR, FileConsts.GATEWAY_API_DEFINITION,JSON.toJSONString(apis));
+        sentinelApiClient.setDegradeRuleOfMachine(app, ip, port, rules);
+        FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home")+ FileConsts.DIR, FileConsts.GATEWAY_DEGRADE_RULE, JSON.toJSONString(rules));
     }
 
 }

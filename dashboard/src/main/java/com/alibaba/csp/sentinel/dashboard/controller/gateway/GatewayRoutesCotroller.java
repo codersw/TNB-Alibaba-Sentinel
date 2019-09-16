@@ -34,8 +34,8 @@ public class GatewayRoutesCotroller {
     @Autowired
     private RouteService routeService;
 
-    @Autowired
-    private SentinelApiClient sentinelApiClient;
+    //@Autowired
+    //private SentinelApiClient sentinelApiClient;
 
     /**
      * 获取列表

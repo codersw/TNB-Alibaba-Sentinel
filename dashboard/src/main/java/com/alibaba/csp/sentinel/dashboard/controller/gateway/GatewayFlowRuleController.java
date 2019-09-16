@@ -65,11 +65,9 @@ public class GatewayFlowRuleController {
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
-    @Qualifier("fileGatewayRuleProvider")
     private FileGatewayRuleProvider ruleProvider;
 
     @Autowired
-    @Qualifier("fileGatewayRulePublisher")
     private FileGatewayRulePublisher rulePublisher;
 
     @GetMapping("/list.json")

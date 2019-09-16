@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * 所以自己封装读取文件
  * @author shaowen
  */
-@Component("fileGatewayApiProvider")
+@Component
 public class FileGatewayApiProvider {
 
     public List<ApiDefinitionEntity> getRules(String app, String ip, Integer port) throws Exception {

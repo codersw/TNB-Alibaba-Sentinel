@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * 所以自己封装读取文件
  * @author shaowen
  */
-@Component("fileGatewayRuleProvider")
+@Component
 public class FileGatewayRuleProvider {
 
     public List<GatewayFlowRuleEntity> getRules(String app, String ip, Integer port) throws Exception {

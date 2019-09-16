@@ -61,11 +61,9 @@ public class GatewayApiController {
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
-    @Qualifier("fileGatewayApiProvider")
     private FileGatewayApiProvider ruleProvider;
 
     @Autowired
-    @Qualifier("fileGatewayApiPublisher")
     private FileGatewayApiPublisher rulePublisher;
 
     @GetMapping("/list.json")
