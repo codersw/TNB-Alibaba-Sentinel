@@ -59,6 +59,8 @@ const JS_APP = [
   'app/scripts/services/gateway/api_service.js',
   'app/scripts/services/gateway/flow_service.js',
   'app/scripts/services/gateway/routes_service.js',
+  'app/scripts/services/gateway/degradeservice.js',
+  'app/scripts/services/gateway/systemservice.js'
 ];
 
 gulp.task('lib', function () {

@@ -12,6 +12,8 @@ import com.alibaba.csp.sentinel.datasource.FileRefreshableDataSource;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;
 import com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;
+import com.alibaba.csp.sentinel.slots.system.SystemRule;
+import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.mango.common.FileConsts;
@@ -78,6 +80,12 @@ public class GatewayConfiguration {
                 source -> JSON.parseObject(source, new TypeReference<List<DegradeRule>>() {})
         );
         DegradeRuleManager.register2Property(degradeRuleRDS.getProperty());
+        // 系统规则
+        ReadableDataSource<String, List<SystemRule>> systemRuleRDS = new FileRefreshableDataSource<>(
+                SentinelConfig.getConfig("user.home") + FileConsts.DIR + FileConsts.GATEWAY_SYSTEM_RULE,
+                source -> JSON.parseObject(source, new TypeReference<List<SystemRule>>() {})
+        );
+        SystemRuleManager.register2Property(systemRuleRDS.getProperty());
         GatewayCallbackManager.setBlockHandler(new GatewayBlockRequestHandler());
     }
 

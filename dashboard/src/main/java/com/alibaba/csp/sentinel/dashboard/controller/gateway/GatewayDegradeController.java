@@ -132,7 +132,7 @@ public class GatewayDegradeController {
             publishRules(app,ip,port);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("publish degrade rules fail after rule delete",e);
+            logger.info("publish degrade rules fail after rule add",e);
         }
         return Result.ofSuccess(entity);
     }
@@ -187,13 +187,13 @@ public class GatewayDegradeController {
             publishRules(app,ip,port);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("publish degrade rules fail after rule delete",e);
+            logger.info("publish degrade rules fail after rule update",e);
         }
         return Result.ofSuccess(entity);
     }
 
     @ResponseBody
-    @RequestMapping("/delete.json")
+    @RequestMapping("/delete")
     public Result<Long> delete(HttpServletRequest request, Long id) {
         AuthUser authUser = authService.getAuthUser(request);
         if (id == null) {

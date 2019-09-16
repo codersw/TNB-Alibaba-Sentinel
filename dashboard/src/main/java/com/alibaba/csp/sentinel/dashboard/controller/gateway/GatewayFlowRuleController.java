@@ -17,8 +17,6 @@ package com.alibaba.csp.sentinel.dashboard.controller.gateway;
 
 
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService;
-import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
-import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayParamFlowItemEntity;
 import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
@@ -27,15 +25,12 @@ import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.AddFlowRuleReqV
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.GatewayParamFlowItemVo;
 import com.alibaba.csp.sentinel.dashboard.domain.vo.gateway.rule.UpdateFlowRuleReqVo;
 import com.alibaba.csp.sentinel.dashboard.repository.gateway.InMemGatewayFlowRuleStore;
-import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiPublisher;
-import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRuleProvider;
-import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayRulePublisher;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayFlowProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.file.FileGatewayFlowPublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -65,10 +60,10 @@ public class GatewayFlowRuleController {
     private AuthService<HttpServletRequest> authService;
 
     @Autowired
-    private FileGatewayRuleProvider ruleProvider;
+    private FileGatewayFlowProvider ruleProvider;
 
     @Autowired
-    private FileGatewayRulePublisher rulePublisher;
+    private FileGatewayFlowPublisher rulePublisher;
 
     @GetMapping("/list.json")
     public Result<List<GatewayFlowRuleEntity>> queryFlowRules(HttpServletRequest request, String app, String ip, Integer port) {

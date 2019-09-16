@@ -251,6 +251,22 @@ angular
         }
       })
 
+      .state('dashboard.gatewayDegrade', {
+          templateUrl: 'app/views/gateway/degrade.html',
+          url: '/gateway/degrade/:app',
+          controller: 'GatewayDegradeCtl',
+          resolve: {
+              loadMyFiles: ['$ocLazyLoad', function ($ocLazyLoad) {
+                  return $ocLazyLoad.load({
+                      name: 'sentinelDashboardApp',
+                      files: [
+                          'app/scripts/controllers/gateway/degrade.js',
+                      ]
+                  });
+              }]
+          }
+       })
+
       .state('dashboard.system', {
         templateUrl: 'app/views/system.html',
         url: '/system/:app',
@@ -266,6 +282,21 @@ angular
           }]
         }
       })
+      .state('dashboard.gatewaySystem', {
+          templateUrl: 'app/views/gateway/system.html',
+          url: '/gateway/system/:app',
+          controller: 'GatewaySystemCtl',
+          resolve: {
+              loadMyFiles: ['$ocLazyLoad', function ($ocLazyLoad) {
+                  return $ocLazyLoad.load({
+                      name: 'sentinelDashboardApp',
+                      files: [
+                          'app/scripts/controllers/gateway/system.js',
+                      ]
+                  });
+              }]
+          }
+       })
 
       .state('dashboard.machine', {
         templateUrl: 'app/views/machine.html',
