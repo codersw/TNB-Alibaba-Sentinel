@@ -1,3 +1,5 @@
+user:
+  home: /var/www
 logging:
   level:
     org:
