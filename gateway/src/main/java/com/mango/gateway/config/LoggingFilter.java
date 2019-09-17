@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -34,6 +35,8 @@ public class LoggingFilter implements GlobalFilter, Ordered {
                 exchange.getRequest().getURI().getPath(),
                 exchange.getRequest().getQueryParams());
         logger.info(info);
+        String hostler = Objects.requireNonNull(exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR)).toString().replace("http://","").replace("https://","").split("/")[0];
+        logger.info(hostler);
         exchange.getAttributes().put(START_TIME, System.currentTimeMillis());
         return chain.filter(exchange).then( Mono.fromRunnable(() -> {
             Long startTime = exchange.getAttribute(START_TIME);
