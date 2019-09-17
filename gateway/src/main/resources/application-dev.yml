@@ -1,5 +1,3 @@
-user:
-  home: ${user.home}
 logging:
   level:
     org:
