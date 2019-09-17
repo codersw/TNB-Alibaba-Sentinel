@@ -33,7 +33,7 @@ public class GatewayBlockRequestHandler implements BlockRequestHandler  {
             errorResponse = GatewayResponse.builder().code(-1).msg("服务降级了").build();
             status = HttpStatus.TOO_MANY_REQUESTS.value();
         } else if (t instanceof ParamFlowException) {
-            errorResponse = GatewayResponse.builder().code(-1).msg("热点参数限流了").build();
+            errorResponse = GatewayResponse.builder().code(-1).msg("接口限流了").build();
             status = HttpStatus.TOO_MANY_REQUESTS.value();
         } else if (t instanceof SystemBlockException) {
             errorResponse = GatewayResponse.builder().code(-1).msg("触发系统保护规则").build();
