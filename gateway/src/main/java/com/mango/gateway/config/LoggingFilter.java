@@ -29,14 +29,16 @@ public class LoggingFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String info = String.format("Method:{%s} Host:{%s} Path:{%s} Query:{%s}",
+//        if(((int)(1+Math.random()*10)) > 5) {
+//            "".substring(0,3);
+//        }
+        String info = String.format("Method:{%s} Host:{%s} Path:{%s} Uri:{%s}Query:{%s}",
                 Objects.requireNonNull(exchange.getRequest().getMethod()).name(),
                 exchange.getRequest().getURI().getHost(),
                 exchange.getRequest().getURI().getPath(),
+                exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR),
                 exchange.getRequest().getQueryParams());
         logger.info(info);
-        String hostler = Objects.requireNonNull(exchange.getAttribute(ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR)).toString().replace("http://","").replace("https://","").split("/")[0];
-        logger.info(hostler);
         exchange.getAttributes().put(START_TIME, System.currentTimeMillis());
         return chain.filter(exchange).then( Mono.fromRunnable(() -> {
             Long startTime = exchange.getAttribute(START_TIME);
