@@ -9,6 +9,7 @@ import com.mango.common.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +41,12 @@ public class RouteService {
      * @param definition
      * @return
      */
-    public void add(RouteDefinitionEntity definition) throws Exception{
-        sentinelApiClient.setRoutes(definition.getApp(),definition.getIp(),definition.getPort(),definition);
+    public void add(RouteDefinitionEntity definition) throws Exception {
         List<RouteDefinitionEntity> array = list(definition.getApp(),definition.getIp(),definition.getPort());
+        if(array.stream().anyMatch(e -> definition.getId().equals(e.getId()))){
+                throw new Exception(definition.getId() + "已存在");
+        };
+        sentinelApiClient.setRoutes(definition.getApp(),definition.getIp(),definition.getPort(),definition);
         array.add(definition);
         FileUtils.saveDataToFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_ROUTES, JSON.toJSONString(array));
     }

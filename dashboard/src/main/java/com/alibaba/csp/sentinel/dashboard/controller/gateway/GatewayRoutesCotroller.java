@@ -89,9 +89,9 @@ public class GatewayRoutesCotroller {
         try{
             routeService.add(body);
             return Result.ofSuccess(null);
-        } catch (Throwable throwable) {
-            logger.error("query gateway routes error:", throwable);
-            return Result.ofThrowable(-1, throwable);
+        } catch (Exception e) {
+            logger.error("query gateway routes error:", e);
+            return Result.ofThrowable(-1, e);
         }
     }
 
