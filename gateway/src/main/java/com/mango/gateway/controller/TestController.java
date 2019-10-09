@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @RequestMapping(value = "/test")
+    @RequestMapping(value = "/test1")
     public GatewayResponse test(){
         return GatewayResponse.builder().build();
     }

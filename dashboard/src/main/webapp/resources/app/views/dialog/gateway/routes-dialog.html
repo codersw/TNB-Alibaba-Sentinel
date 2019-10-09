@@ -32,6 +32,7 @@
 									<option value="After">After</option>
 									<option value="Before">Before</option>
 									<option value="Between">Between</option>
+									<option value="Weight">Weight</option>
 								</select>
 							</div>
 						</div>
@@ -51,33 +52,52 @@
 							<i class="fa fa-plus"></i>&nbsp;新增匹配规则
 						</button>
 					</div>
-					<!--TODO filter规则暂时没有加 感觉没有必要-->
-<!--					<div  ng-repeat="item in currentRoutes.predicates track by $index">-->
-<!--						<div class="form-group">-->
-<!--							<label class="col-sm-2 control-label">过滤谓词</label>-->
-<!--							<div class="col-sm-9">-->
-<!--								<select ng-model="item.name" class="form-control">-->
-<!--									<option value="StripPrefix" selected>StripPrefix</option>-->
-<!--									<option value="PrefixPath">PrefixPath</option>-->
-<!--								</select>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--						<div class="form-group">-->
-<!--							<label class="col-sm-2 control-label">匹配条件</label>-->
-<!--							<div class="col-sm-9">-->
-<!--								<input type="text" class="form-control highlight-border" placeholder="请输入" ng-model='item.value' />-->
-<!--							</div>-->
-<!--							<div class="col-sm-1 control-label" align="center">-->
-<!--								<button class="btn btn-outline-danger" ng-click="removeMatchPattern($index)"-->
-<!--										align="center" ng-if="currentRoutes.predicates.length > 1">X</button>-->
-<!--							</div>-->
-<!--						</div>-->
-<!--					</div>-->
-<!--					<div class="form-group" style="text-align: center">-->
-<!--						<button class="btn btn-outline-primary" ng-click="addNewMatchPattern()">-->
-<!--							<i class="fa fa-plus"></i>&nbsp;新增过滤规则-->
-<!--						</button>-->
-<!--					</div>-->
+					<div  ng-repeat="item in currentRoutes.filters track by $index">
+						<div class="form-group">
+							<label class="col-sm-2 control-label">过滤谓词</label>
+							<div class="col-sm-9">
+								<select ng-model="item.name" class="form-control">
+									<option value="StripPrefix" selected>StripPrefix</option>
+									<option value="PrefixPath">PrefixPath</option>
+									<option value="RewritePath">RewritePath</option>
+									<option value="RequestTime">RequestTime</option>
+									<option value="RequestSize">RequestSize</option>
+									<option value="SaveSession">SaveSession</option>
+									<option value="SecureHeaders">SecureHeaders</option>
+									<option value="SetPath">SetPath</option>
+									<option value="SetResponseHeader">SetResponseHeader</option>
+									<option value="SetStatus">SetStatus</option>
+									<option value="AddRequestHeader">AddRequestHeader</option>
+									<option value="AddResponseHeader">AddResponseHeader</option>
+									<option value="AddRequestParameter">AddRequestParameter</option>
+									<option value="PreserveHostHeader">PreserveHostHeader</option>
+									<option value="RequestRateLimiter">RequestRateLimiter</option>
+									<option value="RedirectTo">RedirectTo</option>
+									<option value="RemoveNonProxyHeaders">RemoveNonProxyHeaders</option>
+									<option value="RemoveRequestHeader">RemoveRequestHeader</option>
+									<option value="RemoveResponseHeader">RemoveResponseHeader</option>
+									<option value="Retry">Retry</option>
+									<option value="Redis">Redis</option>
+									<option value="Hystrix">Hystrix</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">过滤条件</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control highlight-border" placeholder="请输入" ng-model='item.value' />
+							</div>
+							<div class="col-sm-1 control-label" align="center">
+								<button class="btn btn-outline-danger" ng-click="removeMatchPattern1($index)"
+										align="center" ng-if="currentRoutes.filters.length > 0">X</button>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" style="text-align: center">
+						<button class="btn btn-outline-primary" ng-click="addNewMatchPattern1()">
+							<i class="fa fa-plus"></i>&nbsp;新增过滤规则
+						</button>
+					</div>
 				</form>
 			<div class="separator"></div>
 			<div clss="row" style="margin-top: 20px;">

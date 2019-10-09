@@ -101,7 +101,8 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     name: "Path",
                     value: "",
                     args: {}
-                }]
+                }],
+                filters: []
             };
 
             $scope.gatewayRoutesDialog = {
@@ -135,7 +136,25 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
             } else {
                 total = $scope.currentRoutes.predicates.length;
             }
-            $scope.currentRoutes.predicates.splice(total + 1, 0, {name : '', value: ''});
+            $scope.currentRoutes.predicates.splice(total + 1, 0, {
+                name: "Path",
+                value: "",
+                args: {}
+            });
+        };
+        $scope.addNewMatchPattern1 = function() {
+            var total;
+            if ($scope.currentRoutes.filters == null) {
+                $scope.currentRoutes.filters = [];
+                total = 0;
+            } else {
+                total = $scope.currentRoutes.filters.length;
+            }
+            $scope.currentRoutes.filters.splice(total + 1, 0, {
+                name: "StripPrefix",
+                value: "",
+                args: {}
+            });
         };
 
         $scope.removeMatchPattern = function($index) {
@@ -145,6 +164,15 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                 return;
             }
             $scope.currentRoutes.predicates.splice($index, 1);
+        };
+
+        $scope.removeMatchPattern1 = function($index) {
+            // if ($scope.currentRoutes.filters.length <= 1) {
+            //     // Should never happen since no remove button will display when only one predicateItem.
+            //     alert('至少有一个过滤规则');
+            //     return;
+            // }
+            $scope.currentRoutes.filters.splice($index, 1);
         };
 
         $scope.useRouteID = function() {
@@ -185,6 +213,14 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     e.args["_genkey_"+i] = f;
                 });
             });
+            routes.filters.forEach( e => {
+                var v = e.value.replace("|",",").replace("，",",");
+                var arr = v.split(",");
+                e.args = {};
+                arr.forEach( (f,i) =>{
+                    e.args["_genkey_"+i] = f;
+                });
+            });
             var mac = $scope.macInputModel.split(':');
             routes.app = $scope.app;
             routes.ip = mac[0];
@@ -201,6 +237,14 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
 
         function saveRoutes(routes, edit) {
             routes.predicates.forEach( e => {
+                var v = e.value.replace("|",",").replace("，",",");
+                var arr = v.split(",");
+                e.args = {};
+                arr.forEach( (f,i) =>{
+                    e.args["_genkey_"+i] = f;
+                });
+            });
+            routes.filters.forEach( e => {
                 var v = e.value.replace("|",",").replace("，",",");
                 var arr = v.split(",");
                 e.args = {};
