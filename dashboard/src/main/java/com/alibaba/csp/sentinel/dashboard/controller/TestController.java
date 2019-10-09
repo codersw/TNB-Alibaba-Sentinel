@@ -3,7 +3,6 @@ package com.alibaba.csp.sentinel.dashboard.controller;
 import com.alibaba.csp.sentinel.dashboard.domain.Result;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 @RestController
 public class TestController {
