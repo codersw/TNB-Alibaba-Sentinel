@@ -205,7 +205,11 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         };
 
         function addNewRoutes(routes) {
-            routes.predicates.forEach( e => {
+           if(!IsURL(routes.uri)){
+               alert('新增路由规则失败!目标地址得值必须为ip或域名');
+               return;
+           }
+           routes.predicates.forEach( e => {
                 var v = e.value.replace("|",",").replace("，",",");
                 var arr = v.split(",");
                 e.args = {};
@@ -247,6 +251,10 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
         };
 
         function saveRoutes(routes, edit) {
+            if(!IsURL(routes.uri)){
+                alert('新增路由规则失败!目标地址得值必须为ip或域名');
+                return;
+            }
             routes.predicates.forEach( e => {
                 var v = e.value.replace("|",",").replace("，",",");
                 var arr = v.split(",");
@@ -264,7 +272,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     if(e.name === "StripPrefix") {
                         var reg = /^[0-9]$/;
                         if(reg.test(f) === false){
-                            alert('新增路由规则失败!StripPrefix得值必须为数字。');
+                            alert('修改路由规则失败!StripPrefix得值必须为数字。');
                             flag = false;
                             return;
                         }
@@ -331,8 +339,7 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     alert('删除路由规则失败!' + data.msg);
                 }
             });
-        };
-
+        }
         queryAppMachines();
 
         function queryAppMachines() {
@@ -359,7 +366,24 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     }
                 }
             );
-        };
+        }
+        /**
+         * @return {boolean}
+         */
+        function IsURL(str_url){
+            var strRegex = '^((https|http|ftp|rtsp|mms|ws)://)'
+                +'(([0-9a-z_!~*().&=+$%-]+: )?[0-9a-z_!~*().&=+$%-]+@)?' //ftp的user@
+                + '(([0-9]{1,3}.){3}[0-9]{1,3}' // IP形式的URL- 199.194.52.184
+                + '|' // 允许IP和DOMAIN（域名）
+                + '([0-9a-z_!~*()-]+.)*' // 域名- www.
+                + '([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].' // 二级域名
+                + '[a-z]{2,6})' // first level domain- .com or .museum
+                + '(:[0-9]{1,4})?' // 端口- :80
+                + '((/?)|' // a slash isn't required if there is no file name
+                + '(/[0-9a-z_!~*().;?:@&=+$,%#-]+)+/?)$';
+            const re = new RegExp(strRegex);
+            return re.test(str_url);
+        }
         $scope.$watch('macInputModel', function () {
             if ($scope.macInputModel) {
                 getMachineRoutes();
