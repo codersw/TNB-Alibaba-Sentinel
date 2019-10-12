@@ -396,7 +396,7 @@ angular
 
       .state('dashboard.gatewayRoutes',{
           templateUrl: 'app/views/gateway/routes.html',
-          url: '/gateway/flow/:app',
+          url: '/gateway/routes/:app',
           controller: 'GatewayRoutesCtl',
           resolve: {
               loadMyFiles: ['$ocLazyLoad', function ($ocLazyLoad) {
