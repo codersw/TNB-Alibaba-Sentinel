@@ -213,14 +213,25 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     e.args["_genkey_"+i] = f;
                 });
             });
+            var flag = true;
             routes.filters.forEach( e => {
                 var v = e.value.replace("|",",").replace("，",",");
                 var arr = v.split(",");
                 e.args = {};
                 arr.forEach( (f,i) =>{
+                    if(e.name === "StripPrefix") {
+                        if(!angular.isNumber(f)){
+                            alert('新增路由规则失败!StripPrefix得值必须为数字。');
+                            flag = false;
+                            return;
+                        }
+                    }
                     e.args["_genkey_"+i] = f;
                 });
             });
+            if(!flag) {
+                return;
+            }
             var mac = $scope.macInputModel.split(':');
             routes.app = $scope.app;
             routes.ip = mac[0];
@@ -244,14 +255,26 @@ app.controller('GatewayRoutesCtl', ['$scope', '$stateParams','GatewayRoutesServi
                     e.args["_genkey_"+i] = f;
                 });
             });
+            var flag = true;
             routes.filters.forEach( e => {
                 var v = e.value.replace("|",",").replace("，",",");
                 var arr = v.split(",");
                 e.args = {};
                 arr.forEach( (f,i) =>{
+                    if(e.name === "StripPrefix") {
+                        var reg = /^[0-9]$/;
+                        if(reg.test(f) === false){
+                            alert('新增路由规则失败!StripPrefix得值必须为数字。');
+                            flag = false;
+                            return;
+                        }
+                    }
                     e.args["_genkey_"+i] = f;
                 });
             });
+            if(!flag) {
+                return;
+            }
             var mac = $scope.macInputModel.split(':');
             routes.app = $scope.app;
             routes.ip = mac[0];
