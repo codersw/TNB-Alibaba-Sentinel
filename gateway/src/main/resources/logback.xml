@@ -3,12 +3,13 @@
     <!--日志存放跟目录-->
     <property name="LOG_HOME" value="${user.home:-.}"/>
     <!-- 日志文件最大的保存历史数量-->
-    <property name="LOG_MAX" value="30MB"/>
+    <property name="LOG_MAX" value="${log.max}"/>
     <!--日志文件保留天数-->
-    <property name="LOG_DAY" value="30"/>
+    <property name="LOG_DAY" value="${log.history}"/>
     <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd : HH:mm:ss.SSS}[%thread]%-5level%logger{50}-%msg%n"/>
-
+    <!-- 日志级别 trace<debug<info<warn<error若定义的日志级别为info，则不会打印出 trace和debug的相关日志。 -->
+    <property name="LOG_LEVEL" value="${log.level}"/>
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -36,7 +37,7 @@
     </appender>
 
     <!-- 日志级别 trace<debug<info<warn<error若定义的日志级别为info，则不会打印出 trace和debug的相关日志。 -->
-    <root level="DEBUG">
+    <root level="${LOG_LEVEL}">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
