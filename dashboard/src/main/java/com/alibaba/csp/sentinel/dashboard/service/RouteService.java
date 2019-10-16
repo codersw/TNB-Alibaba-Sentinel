@@ -3,6 +3,7 @@ package com.alibaba.csp.sentinel.dashboard.service;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.RouteDefinitionEntity;
+import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
 import com.mango.common.FileConsts;
 import com.mango.common.FileUtils;
@@ -29,7 +30,7 @@ public class RouteService {
      */
     public List<RouteDefinitionEntity> list(String app, String ip, Integer port) throws Exception {
         String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_ROUTES);
-        if(!value.equals("")){
+        if (!StringUtil.isBlank(value.replace("[]",""))) {
             return JSON.parseArray(value, RouteDefinitionEntity.class).stream().filter(rule -> rule.getApp().equals(app) && rule.getIp().equals(ip) && rule.getPort().equals(port)).collect(Collectors.toList());
         }else {
             return new ArrayList<>();

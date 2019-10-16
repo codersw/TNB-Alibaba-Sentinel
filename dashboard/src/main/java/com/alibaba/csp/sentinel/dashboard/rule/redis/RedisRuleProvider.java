@@ -38,7 +38,7 @@ public class RedisRuleProvider{
     private RedisClient client;
 
 
-    public <T> List<T> getRules(String appName, String ruleType, Class<?> c) throws Exception {
+    public <T> List<T> getRules(String appName, String ruleType, Class<?> c) {
         StatefulRedisPubSubConnection<String, String> connection = client.connectPubSub();
         RedisPubSubCommands<String, String> subCommands = connection.sync();
         String rules = subCommands.get(ruleType + appName);

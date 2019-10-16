@@ -25,7 +25,6 @@ public class RedisRulePublisher {
         if (rules == null) {
             return;
         }
-        System.out.println(client);
         StatefulRedisPubSubConnection<String, String> connection = client.connectPubSub();
         RedisPubSubCommands<String, String> subCommands = connection.sync();
         String value = JSON.toJSONString(rules);

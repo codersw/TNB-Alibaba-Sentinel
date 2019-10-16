@@ -28,7 +28,6 @@ import java.util.List;
  * 初始化时读取redis数据源数据
  * @author shaowen
  */
-// @Component
 public class RedisDataSourceInit implements InitFunc {
 
     @Override

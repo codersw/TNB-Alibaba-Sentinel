@@ -42,7 +42,7 @@ public class FileGatewaySystemProvider {
             return new ArrayList<>();
         }
         String value = FileUtils.getDatafromFile(SentinelConfig.getConfig("user.home") + FileConsts.DIR, FileConsts.GATEWAY_SYSTEM_RULE);
-        if (value.equals("")) {
+        if (StringUtil.isBlank(value.replace("[]",""))) {
             return new ArrayList<>();
         } else {
             return JSON.parseArray(value,SystemRuleEntity.class).stream().filter(rule -> rule.getApp().equals(app) && rule.getIp().equals(ip) && rule.getPort().equals(port)).collect(Collectors.toList());
