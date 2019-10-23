@@ -40,7 +40,7 @@
     </appender>
 
     <!-- 日志级别 trace<debug<info<warn<error若定义的日志级别为info，则不会打印出 trace和debug的相关日志。 -->
-    <root level="LOG_LEVEL">
+    <root level="${LOG_LEVEL}">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
