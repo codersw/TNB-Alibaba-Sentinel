@@ -2,7 +2,6 @@ package com.alibaba.csp.sentinel.dashboard;
 
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
-import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.csp.sentinel.datasource.ReadableDataSource;
 import com.alibaba.csp.sentinel.datasource.redis.RedisDataSource;
@@ -20,6 +19,7 @@ import com.alibaba.csp.sentinel.slots.system.SystemRule;
 import com.alibaba.csp.sentinel.slots.system.SystemRuleManager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.mango.common.RuleConsts;
 import org.springframework.stereotype.Component;
 import java.util.List;
 

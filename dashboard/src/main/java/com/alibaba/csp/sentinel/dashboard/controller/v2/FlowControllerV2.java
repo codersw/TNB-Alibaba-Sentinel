@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService.AuthUser;
 import com.alibaba.csp.sentinel.dashboard.auth.AuthService.PrivilegeType;
-import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
 import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.FlowRuleApiPublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
