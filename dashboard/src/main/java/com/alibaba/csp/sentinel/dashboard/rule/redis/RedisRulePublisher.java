@@ -1,6 +1,5 @@
 package com.alibaba.csp.sentinel.dashboard.rule.redis;
 
-import com.alibaba.csp.sentinel.dashboard.constant.RuleConsts;
 import com.alibaba.csp.sentinel.util.AssertUtil;
 import com.alibaba.fastjson.JSON;
 import io.lettuce.core.RedisClient;

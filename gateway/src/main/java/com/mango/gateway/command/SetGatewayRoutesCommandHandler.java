@@ -7,10 +7,9 @@ import com.alibaba.csp.sentinel.command.annotation.CommandMapping;
 import com.alibaba.csp.sentinel.log.RecordLog;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.fastjson.JSON;
-import com.mango.gateway.SpringContextUtils;
+import com.mango.gateway.util.SpringContextUtils;
 import com.mango.gateway.service.RouteService;
 import org.springframework.cloud.gateway.route.RouteDefinition;
-import org.springframework.stereotype.Component;
 
 import java.net.URLDecoder;
 

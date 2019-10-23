@@ -7,6 +7,7 @@ import com.alibaba.csp.sentinel.slots.block.flow.FlowException;
 import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowException;
 import com.alibaba.csp.sentinel.slots.system.SystemBlockException;
 import com.mango.gateway.model.GatewayResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -19,10 +20,13 @@ import static org.springframework.web.reactive.function.BodyInserters.fromObject
  * 自定义请求处理
  * @author shaowen
  */
+@Slf4j
 public class GatewayBlockRequestHandler implements BlockRequestHandler  {
 
     @Override
     public Mono<ServerResponse> handleRequest(ServerWebExchange exchange, Throwable t) {
+        log.error("请求发生异常，请求URI：{}，请求方法：{}，异常信息：{}",
+                exchange.getRequest().getPath(), exchange.getRequest().getMethodValue(), t.getMessage());
         int status = HttpStatus.CONTINUE.value();
         GatewayResponse errorResponse = new GatewayResponse();
         // 不同的异常返回不同的提示语

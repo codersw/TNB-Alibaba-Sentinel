@@ -2,18 +2,17 @@ package com.mango.gateway.controller;
 
 import com.mango.gateway.model.GatewayResponse;
 import com.mango.gateway.service.RouteService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/routes")
 public class RouteController {
-
-    private final Logger logger = LoggerFactory.getLogger(RouteController.class);
-
 
     @Autowired
     private RouteService routeService;
@@ -23,7 +22,7 @@ public class RouteController {
         try {
             return GatewayResponse.builder().data(this.routeService.list()).msg("获取网关成功").success(true).build();
         } catch (Exception e){
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
             return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
@@ -35,7 +34,7 @@ public class RouteController {
             this.routeService.notifyChanged();
             return GatewayResponse.builder().msg("刷新成功").success(true).build();
         } catch (Exception e){
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
             return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
@@ -47,7 +46,7 @@ public class RouteController {
             this.routeService.delete(id);
             return GatewayResponse.builder().msg("删除成功").success(true).build();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
             return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
@@ -59,7 +58,7 @@ public class RouteController {
             return GatewayResponse.builder().msg("获取成功").success(true).data(this.routeService.list().stream().filter(r -> id.equals(r.getId()))).build();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
@@ -71,7 +70,7 @@ public class RouteController {
             return GatewayResponse.builder().msg("添加成功").success(true).build();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             return GatewayResponse.builder().code(-1).msg(e.getMessage()).build();
         }
     }
@@ -83,7 +82,7 @@ public class RouteController {
             return GatewayResponse.builder().msg("修改成功").success(true).build();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             return GatewayResponse.builder().code(-1).msg(e.toString()).build();
         }
     }

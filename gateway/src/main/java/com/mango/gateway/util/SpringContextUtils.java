@@ -1,4 +1,4 @@
-package com.mango.gateway;
+package com.mango.gateway.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
